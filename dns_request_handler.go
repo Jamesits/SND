@@ -38,17 +38,17 @@ func IPToArpaDomain(ip net.IP, reverse bool, ipv6ConversionMode IPv6NotationMode
 	case FOUR_HEXS_NOTATION:
 		reverse = !reverse // in this mode, ret is processed in reverse, so we need to reverse it again before returning
 		var ret2 []string
-		for i := len(ret) - 1; i >= 0; i-=4 {
+		for i := len(ret) - 1; i >= 0; i -= 4 {
 			var b strings.Builder
 			var isLeadingZero = true
 			for j := 3; j >= 0; j-- {
 				if isLeadingZero {
-					if ret[i - j] != "0" {
+					if ret[i-j] != "0" {
 						isLeadingZero = false
-						b.WriteString(ret[i - j])
+						b.WriteString(ret[i-j])
 					}
 				} else {
-					b.WriteString(ret[i - j])
+					b.WriteString(ret[i-j])
 				}
 			}
 			if b.Len() == 0 {
@@ -75,8 +75,8 @@ func IPToArpaDomain(ip net.IP, reverse bool, ipv6ConversionMode IPv6NotationMode
 	return strings.Join(ret, ".")
 }
 
-
 type handler struct{}
+
 func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	msg := dns.Msg{}
 	msg.SetReply(r)
@@ -94,7 +94,7 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		index := len(nameBreakout) - 1
 
 		// sanity check
-		if index < 3 || nameBreakout[index] != "" || nameBreakout[index - 1] != "arpa" {
+		if index < 3 || nameBreakout[index] != "" || nameBreakout[index-1] != "arpa" {
 			log.Printf("Invalid request %s\n", msg.Question[0].Name)
 			return
 		}
@@ -104,10 +104,10 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		// parse IP address out of the request
 		index -= 3
 		var b strings.Builder
-		switch nameBreakout[index + 1] {
+		switch nameBreakout[index+1] {
 		case "in-addr": // IPv4
 			split = "."
-			for ;index >= 0; index-- {
+			for ; index >= 0; index-- {
 				b.WriteString(nameBreakout[index])
 				b.WriteString(split)
 			}
@@ -117,7 +117,7 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 				b.WriteString(nameBreakout[index])
 				index--
 				i++
-				if i % 4 == 0 {
+				if i%4 == 0 {
 					b.WriteString(split)
 				}
 			}
@@ -160,7 +160,7 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 
 				// generate an answer
 				msg.Answer = append(msg.Answer, &dns.PTR{
-					Hdr: dns.RR_Header{ Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: 1919 },
+					Hdr: dns.RR_Header{Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: 1919},
 					Ptr: p.String(),
 				})
 				break

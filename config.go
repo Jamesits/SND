@@ -19,17 +19,17 @@ const (
 
 // config file
 type config struct {
-	Listen []string `toml:"listen"`
+	Listen        []string       `toml:"listen"`
 	PerNetConfigs []perNetConfig `toml:"net"`
 }
 
 type perNetConfig struct {
-	IPNetString    string   `toml:"net"`
-	IPNet *net.IPNet `toml:""`
-	PtrGenerationModeString string `toml:"mode"`
-	PtrGenerationMode PtrGenerationMode `toml:""`
-	IPv6NotationString string `toml:"ipv6_notation"`
-	IPv6NotationMode IPv6NotationMode `toml:""`
-	Domain string `toml:"domain"`
-	DomainPrefix string `toml:"domain_prefix"`
+	IPNetString             string            `toml:"net"`
+	IPNet                   *net.IPNet        `toml:""`
+	PtrGenerationModeString string            `toml:"mode"`
+	PtrGenerationMode       PtrGenerationMode `toml:""`
+	IPv6NotationString      string            `toml:"ipv6_notation"`
+	IPv6NotationMode        IPv6NotationMode  `toml:""`
+	Domain                  string            `toml:"domain"`
+	DomainPrefix            string            `toml:"domain_prefix"`
 }

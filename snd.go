@@ -10,7 +10,6 @@ import (
 	"time"
 )
 
-
 var conf *config
 var configFilePath *string
 
@@ -41,7 +40,7 @@ func main() {
 
 	// fix config
 	// note that range is byVal so we use index here
-	for index, _ := range conf.PerNetConfigs {
+	for index := range conf.PerNetConfigs {
 		// fill IPNet
 		_, conf.PerNetConfigs[index].IPNet, err = net.ParseCIDR(conf.PerNetConfigs[index].IPNetString)
 		hardFailIf(err)
@@ -71,7 +70,7 @@ func main() {
 
 		// check domain
 		l := len(conf.PerNetConfigs[index].Domain)
-		if conf.PerNetConfigs[index].Domain[l - 1] != '.' {
+		if conf.PerNetConfigs[index].Domain[l-1] != '.' {
 			conf.PerNetConfigs[index].Domain += "."
 		}
 		conf.PerNetConfigs[index].Domain = strings.TrimLeft(conf.PerNetConfigs[index].Domain, ".")
@@ -83,7 +82,7 @@ func main() {
 		go listen(r[0], r[1])
 	}
 
-	for ;; {
+	for {
 		time.Sleep(1)
 	}
 }
