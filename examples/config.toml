@@ -1,0 +1,44 @@
+listen = [
+    # protocol:ip.addr:port
+    "tcp::5553",
+    "udp::5553",
+]
+
+[[net]]
+net = "192.168.1.0/24"
+mode = "prefix_ltr"
+domain = "example.com"
+# Generates "192.168.1.1.example.com."
+
+[[net]]
+net = "192.168.2.0/24"
+mode = "prefix_rtl"
+domain = "example.com"
+# Generates "1.2.168.192.example.com."
+
+[[net]]
+net = "192.168.3.0/24"
+mode = "fixed"
+domain = "example.com"
+# Generates "example.com."
+
+[[net]]
+net = "192.168.4.0/24"
+mode = "prefix_ltr"
+domain = "example.com"
+domain_prefix = "yes."
+# Generates "yes.192.168.4.1.example.com."
+# Note: domain_prefix is applied without any sanity check. Make sure it doesn't violate the rules.
+
+[[net]]
+net = "fd00::/48"
+mode = "prefix_ltr"
+domain = "example.com"
+# Works for IPv6 too! Generates "f.d.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.example.com."
+
+[[net]]
+net = "fd00:1::/48"
+mode = "prefix_ltr"
+domain = "example.com"
+ipv6_notation = "four_hexs"
+# Default IPv6 notation is too long for you? This generates "fd00.1.0.0.0.0.0.1.example.com."
