@@ -1,3 +1,5 @@
+# IDEA auto formatter is causing trouble
+# @formatter:off
 name: Docker Image Build
 
 on: [push, pull_request]
@@ -8,9 +10,9 @@ jobs:
     steps:
 
       - uses: actions/checkout@v1
-      
-    - name: Build the Docker image
-      run: docker build . --tag snd
 
-    - name: Verify image
-      run: docker run snd -version
+      - name: Build the Docker image
+    run: docker build . --tag snd
+
+      - name: Verify image
+        run: docker run snd -version
