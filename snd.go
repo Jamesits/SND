@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/BurntSushi/toml"
 	"github.com/miekg/dns"
 	"log"
@@ -12,6 +13,7 @@ import (
 
 var conf *config
 var configFilePath *string
+var showVersionOnly *bool
 
 func listen(proto string, endpoint string) {
 	log.Printf("Listening on %s %s", proto, endpoint)
@@ -26,7 +28,13 @@ func main() {
 	// parse flags
 	var err error
 	configFilePath = flag.String("config", "/etc/snd/config.toml", "config directory")
+	showVersionOnly = flag.Bool("version", false, "show version and quit")
 	flag.Parse()
+
+	if *showVersionOnly {
+		fmt.Printf("SND %d.%d.%d (Commit %s at %s)\n", versionMajor, versionMinor, versionRevision, versionGitCommitHash, versionCompileTime)
+		return
+	}
 
 	// parse config file
 	conf = &config{}
