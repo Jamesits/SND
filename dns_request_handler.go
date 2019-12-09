@@ -228,11 +228,11 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 					return
 				}
 
-				log.Printf("PTR %s => %s", msg.Question[0].Name, p.String())
+				log.Printf("PTR %s => %s", ipaddr.String(), p.String())
 
 				// generate an answer
 				msg.Answer = append(msg.Answer, &dns.PTR{
-					Hdr: dns.RR_Header{Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: 1919},
+					Hdr: dns.RR_Header{Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: netBlock.TTL},
 					Ptr: p.String(),
 				})
 				break
