@@ -1,15 +1,13 @@
 name: Docker Image Build
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v1
+
+      - uses: actions/checkout@v1
       
     - name: Build the Docker image
       run: docker build . --tag snd
