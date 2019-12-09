@@ -89,6 +89,21 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	}
 
 	switch r.Question[0].Qtype {
+	case dns.TypeSOA:
+		log.Printf("SOA %s\n", msg.Question[0].Name)
+
+		// TODO: use the actual SOA for that domain
+		msg.Answer = append(msg.Answer, &dns.SOA{
+			Hdr:     dns.RR_Header{Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: conf.DefaultSOARecord.TTL},
+			Ns:      conf.DefaultSOARecord.MName,
+			Mbox:    conf.DefaultSOARecord.RName,
+			Serial:  conf.DefaultSOARecord.Serial,
+			Refresh: conf.DefaultSOARecord.Refresh,
+			Retry:   conf.DefaultSOARecord.Retry,
+			Expire:  conf.DefaultSOARecord.Expire,
+			Minttl:  conf.DefaultSOARecord.TTL,
+		})
+
 	case dns.TypePTR:
 		nameBreakout := strings.Split(msg.Question[0].Name, ".")
 		index := len(nameBreakout) - 1
@@ -172,6 +187,7 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		}
 
 	default:
+		log.Printf("Unknown request type %d domain %s\n", msg.Question[0].Qtype, msg.Question[0].Name)
 		return
 	}
 }

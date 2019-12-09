@@ -47,6 +47,12 @@ func main() {
 	}
 
 	// fix config
+	if conf.DefaultTTL == 0 {
+		conf.DefaultTTL = 114
+	}
+
+	SOARecordFillDefault(conf.DefaultSOARecord, false)
+
 	// note that range is byVal so we use index here
 	for index := range conf.PerNetConfigs {
 		// fill IPNet
@@ -82,6 +88,18 @@ func main() {
 			conf.PerNetConfigs[index].Domain += "."
 		}
 		conf.PerNetConfigs[index].Domain = strings.TrimLeft(conf.PerNetConfigs[index].Domain, ".")
+
+		// fill TTL
+		if conf.PerNetConfigs[index].TTL == 0 {
+			conf.PerNetConfigs[index].TTL = conf.DefaultTTL
+		}
+
+		// fill SOA
+		if conf.PerNetConfigs[index].SOARecord == nil {
+			conf.PerNetConfigs[index].SOARecord = conf.DefaultSOARecord
+		} else {
+			SOARecordFillDefault(conf.PerNetConfigs[index].SOARecord, true)
+		}
 	}
 
 	// listen them

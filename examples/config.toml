@@ -4,6 +4,12 @@ listen = [
     "udp::53",
 ]
 
+[SOA]
+# your primary NS
+MName = "ns1.example.com."
+# your email
+RName = "dnsmaster.example.com."
+
 [[net]]
 net = "192.168.1.0/24"
 mode = "prefix_ltr"
