@@ -8,13 +8,13 @@ Minimal authoritative PTR (rDNS, reverse DNS) resolver with automatic generation
 
 ## Compilation
 
-Golang 1.13.5 or later is officially supported. Before starting, make sure `GOROOT` and `GOPATH` environmental path is set correctly and a `go` binary is in your `PATH`.
+Golang 1.13.5 or later is officially supported. Before starting, make sure the `GOROOT` and `GOPATH` environment variables are set correctly and there is a `go` binary is in your `PATH`.
 
 ### Linux
 
 ```shell
-git clone https://github.com/Jamesits/snd.git
-cd snd
+git clone https://github.com/Jamesits/SND.git
+cd SND
 ./build.sh
 ```
 
@@ -22,7 +22,11 @@ Collect the binary in the `build` directory.
 
 ### Other OSes
 
-Other OSes except Windows are not tested, though in theory it should run fine. You need to figure out how to build on these platforms on yourself.
+Other OSes except Windows are not tested because of the lack of resources available to me, though in theory it should run fine. You need to figure out how to build on these platforms on yourself.
+
+### Cross Compiling
+
+Set the `GOOS` and `GOARCH` to the desired values and run `build.sh`.
 
 ## Usage
 
