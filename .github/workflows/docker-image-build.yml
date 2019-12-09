@@ -15,4 +15,4 @@ jobs:
       run: docker build . --tag snd
 
     - name: Verify image
-      run: docker run -it snd -version
+      run: docker run snd -version
