@@ -16,6 +16,10 @@ MName = "ns1.example.com."
 # your email
 RName = "dnsmaster.example.com."
 
+# Define your nets here
+# In current version, the IP address requested will be matched from top to bottom, so write small blocks in the front
+# if the net blocks you define overlaps.
+
 [[net]]
 net = "192.168.1.0/24"
 mode = "prefix_ltr"

@@ -26,19 +26,19 @@ Other OSes except Windows are not tested because of the lack of resources availa
 
 ### Cross Compiling
 
-Set the `GOOS` and `GOARCH` to the desired values and run `build.sh`.
+Set the `GOOS` and `GOARCH` to the desired [values](https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63) and run `build.sh`.
 
 ## Usage
 
 ### Configure SND
 
-Copy over the self-documented [example config](examples/config.toml) and tweak it for your own need. Please do not leave any `example.com` things in your own config. 
+Copy over the self-documented [example config](examples/config.toml) and tweak it for your own need. Please do not leave any `example.com` things in your own config. Remove what you don't need. 
 
-Currently no strict config file format checking is implemented -- you might crash the program if some keys are missing. 
+Currently no strict config file format checking is implemented -- you might crash the program if some important keys are missing. 
 
 ### Set up SND
 
-In most cases you are going to need 2 servers (or 1 with 2 different IP addresses if you don't care about availability issues). Copy the exact same config file to both servers and launch SND on both of them:
+In most cases you are going to need 2 servers (or one server with 2 different IP addresses if you don't care about availability issues). Copy the exact same config file to both servers and launch SND on both of them:
 
 ```shell
 ./snd -config path/to/config.toml
