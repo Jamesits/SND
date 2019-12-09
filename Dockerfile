@@ -1,21 +1,24 @@
 # build stage
 FROM golang:1.13-buster as builder
 
-RUN adduser -D -g '' snd
-
 WORKDIR /root/snd
-COPY *.go /root/snd
-COPY build.sh /root/snd
+COPY . /root/snd/
 RUN ./build.sh
 
 # production stage
-FROM scratch
+FROM debian:buster-slim
 LABEL maintainer="docker@public.swineson.me"
 
 # Import the user and group files from the builder.
-COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/passwd /etc/group /etc/
 
-COPY --from=builder /root/snd/build/snd /bin/snd
-USER snd
-ENTRYPOINT [ "/bin/snd" ]
-CMD [ "-version" ]
+COPY --from=builder /root/snd/build/snd /usr/local/bin/
+COPY --from=builder /root/snd/examples/config.toml /etc/snd/
+
+# nope
+# See: https://github.com/moby/moby/issues/8460
+# USER nobody:nogroup
+
+EXPOSE 53/tcp 53/udp
+ENTRYPOINT [ "/usr/local/bin/snd" ]
+CMD [ "-config",  "/etc/snd/config.toml" ]

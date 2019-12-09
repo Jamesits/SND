@@ -16,4 +16,8 @@ export GO111MODULE=on
 go mod download
 go mod verify
 go build -ldflags "-s -w -X \"main.versionGitCommitHash=$GIT_COMMIT\" -X \"main.versionCompileTime=$CURRENT_TIME\"" -o build/snd
+
+# root required
+! setcap 'cap_net_bind_service=+ep' ./build/snd
+
 ./build/snd -version
