@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Build the Docker image
-    run: docker build . --tag snd
+        run: docker build . --tag snd
 
       - name: Verify image
         run: docker run snd -version
