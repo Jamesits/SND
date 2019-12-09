@@ -39,10 +39,10 @@ func main() {
 	}
 
 	if *showVersionOnly {
-		fmt.Printf("SND %d.%d.%d (Commit %s at %s)\n", versionMajor, versionMinor, versionRevision, versionGitCommitHash, versionCompileTime)
+		fmt.Printf("SND %d.%d.%d (Compiled on %s for commit %s at %s)\n", versionMajor, versionMinor, versionRevision, versionCompileHost, versionGitCommitHash, versionCompileTime)
 		return
 	} else {
-		log.Printf("SND %d.%d.%d (Commit %s at %s)\n", versionMajor, versionMinor, versionRevision, versionGitCommitHash, versionCompileTime)
+		log.Printf("SND %d.%d.%d (Compiled on %s for commit %s at %s)\n", versionMajor, versionMinor, versionRevision, versionCompileHost, versionGitCommitHash, versionCompileTime)
 	}
 
 	// parse config file

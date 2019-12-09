@@ -5,3 +5,4 @@ var versionMinor = 1
 var versionRevision = 0
 var versionGitCommitHash string
 var versionCompileTime string
+var versionCompileHost string
