@@ -10,10 +10,10 @@ mkdir -p build
 mkdir -p /tmp/go/gopath
 
 # set it to the actual goroot, else you will have strange errors complaining cannot load bufio
-export GOROOT=/tmp/go
-export GOPATH=/tmp/go/gopath
 export GO111MODULE=on
 
-go get -d ./...
+# go get -d ./...
+go mod download
+go mod verify
 go build -ldflags "-s -w -X \"main.versionGitCommitHash=$GIT_COMMIT\" -X \"main.versionCompileTime=$CURRENT_TIME\"" -o build/snd
 ./build/snd -version
