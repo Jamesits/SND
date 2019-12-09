@@ -112,6 +112,8 @@ func finishAnswer(w *dns.ResponseWriter, r *dns.Msg) {
 	}
 }
 
+// TODO: force TCP for 1) clients which requests too fast; 2) non-existent answers
+// See: https://labs.apnic.net/?p=382
 func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	msg := newDnsReplyMsg()
 	msg.SetReply(r)
