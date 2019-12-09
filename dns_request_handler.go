@@ -42,6 +42,10 @@ func IPToArpaDomain(ip net.IP, reverse bool, ipv6ConversionMode IPv6NotationMode
 			var b strings.Builder
 			var isLeadingZero = true
 			for j := 3; j >= 0; j-- {
+				if len(ret) < i-j || 0 > i-j {
+					log.Panicf("Assertion for IP length can be divided in 4 failed")
+				}
+				//noinspection GoNilness
 				if isLeadingZero {
 					if ret[i-j] != "0" {
 						isLeadingZero = false
@@ -77,14 +81,46 @@ func IPToArpaDomain(ip net.IP, reverse bool, ipv6ConversionMode IPv6NotationMode
 
 type handler struct{}
 
-func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
+func newDnsReplyMsg() *dns.Msg {
 	msg := dns.Msg{}
-	msg.SetReply(r)
+
+	msg.Compress = conf.CompressDNSMessages
+
+	// this is an authoritative DNS server
 	msg.Authoritative = true
-	defer w.WriteMsg(&msg)
+	msg.RecursionAvailable = false
+
+	// DNSSEC disabled for now
+	// TODO: fix DNSSEC
+	msg.AuthenticatedData = false
+	msg.CheckingDisabled = true
+
+	return &msg
+}
+
+func finishAnswer(w *dns.ResponseWriter, r *dns.Msg) {
+	err := (*w).WriteMsg(r)
+	if err != nil {
+		softFailIf(err)
+
+		// reply with SERVFAIL
+		msg := newDnsReplyMsg()
+		msg.SetReply(r)
+		msg.Rcode = dns.RcodeServerFailure
+		err = (*w).WriteMsg(msg)
+		softFailIf(err)
+	}
+}
+
+func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
+	msg := newDnsReplyMsg()
+	msg.SetReply(r)
+
+	defer finishAnswer(&w, msg)
 
 	// sanity check
 	if len(r.Question) != 1 {
+		msg.Rcode = dns.RcodeRefused
 		return
 	}
 
@@ -92,11 +128,14 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	case dns.TypeSOA:
 		log.Printf("SOA %s\n", msg.Question[0].Name)
 
-		// TODO: use the actual SOA for that domain
+		// TODO: check if domain exists, and use the actual SOA for that domain
+		// if not our case, we should reply with authority section containing root zone
+		// See: http://www-inf.int-evry.fr/~hennequi/CoursDNS/NOTES-COURS_eng/msg.html
+		// Get root zone from https://www.internic.net/domain/named.root
 		msg.Answer = append(msg.Answer, &dns.SOA{
 			Hdr:     dns.RR_Header{Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: conf.DefaultSOARecord.TTL},
-			Ns:      conf.DefaultSOARecord.MName,
-			Mbox:    conf.DefaultSOARecord.RName,
+			Ns:      *conf.DefaultSOARecord.MName,
+			Mbox:    *conf.DefaultSOARecord.RName,
 			Serial:  conf.DefaultSOARecord.Serial,
 			Refresh: conf.DefaultSOARecord.Refresh,
 			Retry:   conf.DefaultSOARecord.Retry,
@@ -109,10 +148,12 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	case dns.TypeNS:
 		log.Printf("NS %s\n", msg.Question[0].Name)
 
+		// TODO: check if domain exists
+		// same for root zone
 		for _, ns := range conf.DefaultNSes {
 			msg.Answer = append(msg.Answer, &dns.NS{
 				Hdr: dns.RR_Header{Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: conf.DefaultSOARecord.TTL},
-				Ns:  ns,
+				Ns:  *ns,
 			})
 		}
 
@@ -124,7 +165,7 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 
 		// sanity check
 		if index < 3 || nameBreakout[index] != "" || nameBreakout[index-1] != "arpa" {
-			log.Printf("Invalid request %s\n", msg.Question[0].Name)
+			log.Printf("PTR %s not rational\n", msg.Question[0].Name)
 			return
 		}
 
@@ -151,7 +192,7 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 				}
 			}
 		default:
-			log.Printf("Invalid request %s\n", msg.Question[0].Name)
+			log.Printf("PTR %s unable to parse IP address\n", msg.Question[0].Name)
 			return
 		}
 		ipaddr := net.ParseIP(strings.TrimRight(b.String(), split))
@@ -168,24 +209,26 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 
 				// construct ptr
 				var p strings.Builder
-				p.WriteString(netBlock.DomainPrefix)
+				if netBlock.DomainPrefix != nil {
+					p.WriteString(*netBlock.DomainPrefix)
+				}
 
 				switch netBlock.PtrGenerationMode {
 				case FIXED:
-					p.WriteString(netBlock.Domain)
+					p.WriteString(*netBlock.Domain)
 				case PREPEND_LEFT_TO_RIGHT:
 					p.WriteString(IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode))
 					p.WriteString(".")
-					p.WriteString(netBlock.Domain)
+					p.WriteString(*netBlock.Domain)
 				case PREPEND_RIGHT_TO_LEFT:
 					p.WriteString(IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode))
 					p.WriteString(".")
-					p.WriteString(netBlock.Domain)
+					p.WriteString(*netBlock.Domain)
 				default:
 					return
 				}
 
-				log.Printf("%s => %s", msg.Question[0].Name, p.String())
+				log.Printf("PTR %s => %s", msg.Question[0].Name, p.String())
 
 				// generate an answer
 				msg.Answer = append(msg.Answer, &dns.PTR{
@@ -197,11 +240,12 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		}
 
 		if !found {
-			log.Printf("Unknown net %s", ipaddr.String())
+			log.Printf("PTR %s unknown net", ipaddr.String())
 		}
 
 	default:
-		log.Printf("Unknown request type %d domain %s\n", msg.Question[0].Qtype, msg.Question[0].Name)
+		msg.Rcode = dns.RcodeNotImplemented
+		log.Printf("%d %s not implemented\n", msg.Question[0].Qtype, msg.Question[0].Name)
 		return
 	}
 }

@@ -10,11 +10,22 @@ NS = [
     "ns2.example.com.",
 ]
 
+# use DNS pointer compression
+compress_dns_messages = true
+
+# This will become the default SOA record for all your networks, unless overrided.
+# Make it exactly the same across all servers.
 [SOA]
-# your primary NS
+# your primary NS, usually the domain name of one of your NS servers, dot at end
 MName = "ns1.example.com."
-# your email
+# your email in dot notation, dot at end
 RName = "dnsmaster.example.com."
+## Optional fields, see Wikipedia for explanation
+# Serial = 1970010101
+# Refresh = 86400
+# Retry = 7200
+# Expire = 3600000
+# TTL = 172800
 
 # Define your nets here
 # In current version, the IP address requested will be matched from top to bottom, so write small blocks in the front
