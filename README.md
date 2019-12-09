@@ -6,6 +6,24 @@ Minimal authoritative PTR (rDNS, reverse DNS) resolver with automatic generation
 
 [![](https://images.microbadger.com/badges/image/jamesits/snd.svg)](https://microbadger.com/images/jamesits/snd "Get your own image badge on microbadger.com")
 
+## Compilation
+
+Golang 1.13.5 or later is officially supported. Before starting, make sure `GOROOT` and `GOPATH` environmental path is set correctly and a `go` binary is in your `PATH`.
+
+### Linux
+
+```shell
+git clone https://github.com/Jamesits/snd.git
+cd snd
+./build.sh
+```
+
+Collect the binary in the `build` directory.
+
+### Other OSes
+
+Other OSes except Windows are not tested, though in theory it should run fine. You need to figure out how to build on these platforms on yourself.
+
 ## Usage
 
 ### Configure SND
