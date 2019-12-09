@@ -51,6 +51,8 @@ func main() {
 		conf.DefaultTTL = 114
 	}
 
+	// TODO: check NS records format (dot at the end)
+	// TODO: check if DefaultSOARecord exists
 	SOARecordFillDefault(conf.DefaultSOARecord, false)
 
 	// note that range is byVal so we use index here

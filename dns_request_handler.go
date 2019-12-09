@@ -104,6 +104,20 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 			Minttl:  conf.DefaultSOARecord.TTL,
 		})
 
+		return
+
+	case dns.TypeNS:
+		log.Printf("NS %s\n", msg.Question[0].Name)
+
+		for _, ns := range conf.DefaultNSes {
+			msg.Answer = append(msg.Answer, &dns.NS{
+				Hdr: dns.RR_Header{Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: conf.DefaultSOARecord.TTL},
+				Ns:  ns,
+			})
+		}
+
+		return
+
 	case dns.TypePTR:
 		nameBreakout := strings.Split(msg.Question[0].Name, ".")
 		index := len(nameBreakout) - 1

@@ -23,6 +23,7 @@ type config struct {
 	DefaultTTL       uint32         `toml:"default_ttl"`
 	DefaultSOARecord *SOARecord     `toml:"SOA"`
 	PerNetConfigs    []perNetConfig `toml:"net"`
+	DefaultNSes      []string       `toml:"ns"`
 }
 
 type SOARecord struct {

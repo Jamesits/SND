@@ -4,6 +4,12 @@ listen = [
     "udp::53",
 ]
 
+# set to the domain names of your authoritive DNS servers
+NS = [
+    "ns1.example.com.",
+    "ns2.example.com.",
+]
+
 [SOA]
 # your primary NS
 MName = "ns1.example.com."
