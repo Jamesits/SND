@@ -1,7 +1,7 @@
 listen = [
     # protocol:ip.addr:port
-    "tcp::5553",
-    "udp::5553",
+    "tcp::53",
+    "udp::53",
 ]
 
 [[net]]
