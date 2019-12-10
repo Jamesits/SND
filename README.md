@@ -24,7 +24,7 @@ SND provides you a simple alternative option: you name a base domain, and SND ge
 
 SND can run on very little processing power (Raspberry Pis are fine) and a very small memory footprint (a few MBs) although the performance will be not optimal.
 
-As of version 0.1.1, on a 4-core Intel E5-2670 VM with more than 2GiB memory, SND can process 10K QPS (burst).
+As of version 0.1.2, on a 4-core Intel E5-2670 VM with more than 2GiB memory, SND can process around 25K RPS.
 
 ### Software
 
