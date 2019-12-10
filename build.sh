@@ -3,6 +3,9 @@ set -Eeuo pipefail
 
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
+# set GOROOT to the actual goroot, else you will have strange errors complaining cannot load bufio
+# fix GOPATH if it doesn't exist
+GOPATH=${GOPATH:-/tmp/gopath}
 OUT_FILE=${OUT_FILE:-snd}
 
 GIT_COMMIT=$(git rev-list -1 HEAD | cut -c -8)
@@ -16,7 +19,6 @@ else
 fi
 
 mkdir -p build
-# set it to the actual goroot, else you will have strange errors complaining cannot load bufio
 ! mkdir -p "$GOPATH"
 
 # go get -d ./...
