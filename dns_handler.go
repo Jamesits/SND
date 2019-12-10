@@ -24,6 +24,7 @@ func newDnsReplyMsg() *dns.Msg {
 	return &msg
 }
 
+// send out the generated answer, and if the answer is not correct, send out a SERVFAIL
 func finishAnswer(w *dns.ResponseWriter, r *dns.Msg) {
 	err := (*w).WriteMsg(r)
 	if err != nil {
