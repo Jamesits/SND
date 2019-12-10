@@ -7,15 +7,17 @@ import (
 	"github.com/miekg/dns"
 	"log"
 	"strings"
-	"time"
+	"sync"
 )
 
 var conf *config
 var configFilePath *string
 var showVersionOnly *bool
+var mainThreadWaitGroup = &sync.WaitGroup{}
 
 // Listen on a specific endpoint
 func listen(proto, endpoint string) {
+	defer mainThreadWaitGroup.Done()
 	log.Printf("Listening on %s %s", proto, endpoint)
 	srv := &dns.Server{Addr: endpoint, Net: proto}
 	srv.Handler = &handler{}
@@ -54,10 +56,9 @@ func main() {
 	// listen them
 	for _, elem := range conf.Listen {
 		r := strings.SplitN(*elem, ":", 2)
+		mainThreadWaitGroup.Add(1)
 		go listen(r[0], r[1])
 	}
 
-	for {
-		time.Sleep(1 * time.Second)
-	}
+	mainThreadWaitGroup.Wait()
 }

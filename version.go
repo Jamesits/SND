@@ -4,7 +4,7 @@ import "fmt"
 
 var versionMajor = 0
 var versionMinor = 1
-var versionRevision = 1
+var versionRevision = 2
 var versionGitCommitHash string
 var versionCompileTime string
 var versionCompileHost string
