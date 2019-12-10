@@ -40,7 +40,7 @@ func main() {
 	// parse config file
 	conf = &config{}
 	metaData, err := toml.DecodeFile(*configFilePath, conf)
-	softFailIf(err)
+	hardFailIf(err)
 
 	// print unknown configs
 	for _, key := range metaData.Undecoded() {
