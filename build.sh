@@ -26,7 +26,7 @@ go build -ldflags "-s -w -X \"main.versionGitCommitHash=$GIT_COMMIT\" -X \"main.
 
 # upx
 if which upx; then
-	! upx --ultra-brute ./build/snd
+	! upx ./build/snd
 else
 	echo "UPX not installed, compression skipped"
 fi
