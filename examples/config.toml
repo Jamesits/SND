@@ -13,6 +13,11 @@ NS = [
 # use DNS pointer compression
 compress_dns_messages = true
 
+# allow querying DNS server version by a DNS request
+allow_version_reporting = false
+# you can fake the version string
+version_string = "bind-⑨"
+
 # This will become the default SOA record for all your networks, unless overrided.
 # Make it exactly the same across all servers.
 [SOA]

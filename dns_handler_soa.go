@@ -13,7 +13,7 @@ func handleSOA(this *handler, r *dns.Msg, msg *dns.Msg) {
 	// See: http://www-inf.int-evry.fr/~hennequi/CoursDNS/NOTES-COURS_eng/msg.html
 	// Get root zone from https://www.internic.net/domain/named.root
 	msg.Answer = append(msg.Answer, &dns.SOA{
-		Hdr:     dns.RR_Header{Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: dns.ClassINET, Ttl: conf.DefaultSOARecord.TTL},
+		Hdr:     dns.RR_Header{Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: r.Question[0].Qclass, Ttl: conf.DefaultSOARecord.TTL},
 		Ns:      *conf.DefaultSOARecord.MName,
 		Mbox:    *conf.DefaultSOARecord.RName,
 		Serial:  conf.DefaultSOARecord.Serial,

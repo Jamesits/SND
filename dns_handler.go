@@ -53,31 +53,33 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 		return
 	}
 
-	switch r.Question[0].Qtype {
-	case dns.TypeSOA:
-		handleSOA(this, r, msg)
-		return
+	switch r.Question[0].Qclass {
+	case dns.ClassINET:
+		switch r.Question[0].Qtype {
+		case dns.TypeSOA:
+			handleSOA(this, r, msg)
+			return
 
-	case dns.TypeNS:
-		handleNS(this, r, msg)
-		return
+		case dns.TypeNS:
+			handleNS(this, r, msg)
+			return
 
-	case dns.TypePTR:
-		handlePTR(this, r, msg)
-		return
+		case dns.TypePTR:
+			handlePTR(this, r, msg)
+			return
 
-	case dns.TypeTXT:
-		if r.Question[0].Qclass == dns.ClassCHAOS && strings.ToLower(r.Question[0].Name) == "version.bind." {
+		default:
+			handleDefault(this, r, msg)
+			return
+		}
+	case dns.ClassCHAOS:
+		if strings.ToLower(r.Question[0].Name) == "version.bind." {
 			// we need to reply our software version
 			// https://serverfault.com/questions/517087/dns-how-to-find-out-which-software-a-remote-dns-server-is-running
 			handleTXTVersionRequest(this, r, msg)
 		} else {
 			handleDefault(this, r, msg)
 		}
-		return
-
-	default:
-		handleDefault(this, r, msg)
 		return
 	}
 }
