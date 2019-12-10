@@ -4,29 +4,8 @@ Minimal authoritative PTR (rDNS, reverse DNS) resolver with automatic generation
 
 **WARNING**: This piece of software is at a very early development stage and should be considered experimental. It only implements a minimal feature set to pass the RIPE automated DNS test and is by no means standard-compliant. Please don't run it in production. 
 
-[![Build Status](https://dev.azure.com/nekomimiswitch/General/_apis/build/status/SND?branchName=master)](https://dev.azure.com/nekomimiswitch/General/_build/latest?definitionId=71&branchName=master)[![](https://images.microbadger.com/badges/image/jamesits/snd.svg)](https://microbadger.com/images/jamesits/snd "Get your own image badge on microbadger.com")
-
-## Compilation
-
-Golang 1.13.5 or later is officially supported. Before starting, make sure the `GOROOT` and `GOPATH` environment variables are set correctly and there is a `go` binary is in your `PATH`.
-
-### Linux
-
-```shell
-git clone https://github.com/Jamesits/SND.git
-cd SND
-./build.sh
-```
-
-Collect the binary in the `build` directory.
-
-### Other OSes
-
-Other OSes except Windows are not tested because of the lack of resources available to me, though in theory it should run fine. You need to figure out how to build on these platforms on yourself.
-
-### Cross Compiling
-
-Set the `GOOS` and `GOARCH` to the desired [values](https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63) and run `build.sh`.
+[![Build Status](https://dev.azure.com/nekomimiswitch/General/_apis/build/status/SND?branchName=master)](https://dev.azure.com/nekomimiswitch/General/_build/latest?definitionId=71&branchName=master)
+[![](https://images.microbadger.com/badges/image/jamesits/snd.svg)](https://microbadger.com/images/jamesits/snd "Get your own image badge on microbadger.com")
 
 ## Usage
 
@@ -40,14 +19,17 @@ Currently no strict config file format checking is implemented -- you might cras
 
 In most cases you are going to need 2 servers (or one server with 2 different IP addresses if you don't care about availability issues). Copy the exact same config file to both servers and launch SND on both of them:
 
+Download the pre-compiled binary from [releases](https://github.com/Jamesits/SND/releases) to your server and run it:
+
 ```shell
+chmod +x ./snd
 ./snd -config path/to/config.toml
 ```
 
 Or, if you prefer Docker:
 
 ```shell
-docker run --rm -p 53:53 -p 53:53/udp -v config.toml:/etc/snd/config.toml:ro snd
+docker run --rm -p 53:53 -p 53:53/udp -v path/to/config.toml:/etc/snd/config.toml:ro snd:latest
 ```
 
 Run a simple test using dig:
@@ -107,3 +89,25 @@ Notes:
 
 * The smallest IP block sizes available for delegation differ
 * Only RIPE NCC is currently tested because I cannot afford IP blocks from the other RIRs
+
+## Compilation
+
+Golang 1.13.5 or later is officially supported. Before starting, make sure the `GOROOT` and `GOPATH` environment variables are set correctly and there is a `go` binary is in your `PATH`.
+
+### Linux
+
+```shell
+git clone https://github.com/Jamesits/SND.git
+cd SND
+./build.sh
+```
+
+Collect the binary in the `build` directory.
+
+### Other OSes
+
+Other OSes except Windows are not tested because of the lack of resources available to me, though in theory it should run fine. You need to figure out how to build on these platforms on yourself if you want a native build.
+
+### Cross Compiling
+
+Set the `GOOS` and `GOARCH` to the desired [values](https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63) and run `build.sh`.
