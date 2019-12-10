@@ -24,6 +24,13 @@ go mod download
 go mod verify
 go build -ldflags "-s -w -X \"main.versionGitCommitHash=$GIT_COMMIT\" -X \"main.versionCompileTime=$CURRENT_TIME\" -X \"main.versionCompileHost=$COMPILE_HOST\" -X \"main.versionGitStatus=$GIT_STATUS\"" -o build/snd
 
+# upx
+if which upx; then
+	! upx --ultra-brute ./build/snd
+else
+	echo "UPX not installed, compression skipped"
+fi
+
 # root required
 ! setcap 'cap_net_bind_service=+ep' ./build/snd
 
