@@ -30,19 +30,11 @@ func main() {
 	showVersionOnly = flag.Bool("version", false, "show version and quit")
 	flag.Parse()
 
-	if len(versionGitCommitHash) == 0 {
-		versionGitCommitHash = "UNKNOWN"
-	}
-
-	if len(versionCompileTime) == 0 {
-		versionCompileTime = "UNKNOWN TIME"
-	}
-
 	if *showVersionOnly {
-		fmt.Printf("SND %d.%d.%d (Compiled on %s for commit %s at %s)\n", versionMajor, versionMinor, versionRevision, versionCompileHost, versionGitCommitHash, versionCompileTime)
+		fmt.Println(getVersionFullString())
 		return
 	} else {
-		log.Printf("SND %d.%d.%d (Compiled on %s for commit %s at %s)\n", versionMajor, versionMinor, versionRevision, versionCompileHost, versionGitCommitHash, versionCompileTime)
+		log.Println(getVersionFullString())
 	}
 
 	// parse config file
