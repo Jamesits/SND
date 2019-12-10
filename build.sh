@@ -16,7 +16,7 @@ else
 fi
 
 mkdir -p build
-mkdir -p /tmp/go/gopath
+mkdir -p "$GOPATH"
 
 # set it to the actual goroot, else you will have strange errors complaining cannot load bufio
 export GO111MODULE=on
