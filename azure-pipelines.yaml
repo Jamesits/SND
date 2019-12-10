@@ -9,6 +9,13 @@ trigger:
   paths:
     exclude: [ "README.md", "LICENSE", ".github/*", "examples/*" ]
 
+pr:
+  autoCancel: true
+  branches:
+    include: [ "master", "develop" ]
+  paths:
+    exclude: [ "README.md", "LICENSE", ".github/*", "examples/*" ]
+
 jobs:
   - job: binary
     displayName: "binary build"
@@ -48,16 +55,17 @@ jobs:
         version: $(GOVER)
 
     - bash: |
-      export DEBIAN_FRONTEND=noninteractive
-      sudo apt-get update
-      sudo apt-get install -y upx
-
+        export DEBIAN_FRONTEND=noninteractive
+        sudo apt-get update
+        sudo apt-get install -y upx
+      displayName: 'Install Dependencies'
     - bash: |
-      export GOPATH="/tmp/go"
-      export GOBIN="/opt/hostedtoolcache/go/${GOVER}/x64/bin"
-      export OUT_FILE="snd-${GOOS}-${GOARCH}${FILENAME_SUFFIX}"
-      ./build.sh
-      cp build/snd* ${BUILD_ARTIFACTSTAGINGDIRECTORY}
+        export GOPATH="/tmp/go"
+        export GOBIN="/opt/hostedtoolcache/go/${GOVER}/x64/bin"
+        export OUT_FILE="snd-${GOOS}-${GOARCH}${FILENAME_SUFFIX}"
+        ./build.sh
+        cp build/snd* ${BUILD_ARTIFACTSTAGINGDIRECTORY}
+      displayName: 'Build'
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact'
