@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func handleSOA(this *handler, r *dns.Msg, msg *dns.Msg) {
+func handleSOA(this *handler, r, msg *dns.Msg) {
 	log.Printf("SOA %s\n", msg.Question[0].Name)
 
 	// TODO: check if domain exists, and use the actual SOA for that domain

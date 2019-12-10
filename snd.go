@@ -16,13 +16,16 @@ var showVersionOnly *bool
 var mainThreadWaitGroup = &sync.WaitGroup{}
 
 // Listen on a specific endpoint
+// proto can be "udp" or "tcp"
+// endpoint is "ip.address:port"
 func listen(proto, endpoint string) {
 	defer mainThreadWaitGroup.Done()
 	log.Printf("Listening on %s %s", proto, endpoint)
 	srv := &dns.Server{Addr: endpoint, Net: proto}
 	srv.Handler = &handler{}
 	if err := srv.ListenAndServe(); err != nil {
-		log.Fatalf("Failed to set udp listener %s\n", err.Error())
+		log.Printf("Failed to set %s listener %s\n", proto, endpoint)
+		hardFailIf(err)
 	}
 }
 

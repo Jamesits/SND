@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func handlePTR(this *handler, r *dns.Msg, msg *dns.Msg) {
+func handlePTR(this *handler, r, msg *dns.Msg) {
 	nameBreakout := strings.Split(msg.Question[0].Name, ".")
 	index := len(nameBreakout) - 1
 

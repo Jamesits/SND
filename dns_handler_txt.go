@@ -6,7 +6,7 @@ import (
 )
 
 // replies a TXT record containing server name and version
-func handleTXTVersionRequest(this *handler, r *dns.Msg, msg *dns.Msg) {
+func handleTXTVersionRequest(this *handler, r, msg *dns.Msg) {
 	log.Printf("TXT %s\n", msg.Question[0].Name)
 
 	if !conf.AllowVersionReporting {
