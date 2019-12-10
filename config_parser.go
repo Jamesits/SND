@@ -8,8 +8,7 @@ import (
 
 func ensureDotAtRight(s *string) *string {
 	if !strings.HasSuffix(*s, ".") {
-		ret := *s
-		ret = ret + "."
+		ret := *s + "."
 		return &ret
 	} else {
 		return s
@@ -18,8 +17,7 @@ func ensureDotAtRight(s *string) *string {
 
 func ensureNoDotAtLeft(s *string) *string {
 	if !strings.HasPrefix(*s, ".") {
-		ret := *s
-		strings.TrimLeft(ret, ".")
+		ret := strings.TrimLeft(*s, ".")
 		return &ret
 	} else {
 		return s
