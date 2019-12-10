@@ -102,7 +102,6 @@ zone-c:   <nic-handle for zone contact>
 nserver:  ns1.example.com
 nserver:  ns2.example.com
 mnt-by:   <your maintainer>
-source:   RIPE
 ```
 
 Detailed instructions are provided per RIR:
