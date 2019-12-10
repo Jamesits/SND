@@ -103,11 +103,9 @@ func IPToArpaDomain(ip net.IP, reverse bool, ipv6ConversionMode IPv6NotationMode
 		for _, elem := range ip {
 			s := fmt.Sprintf("%x", elem) // 2 characters per iteration
 			if len(s) == 2 {
-				ret = append(ret, s[0:1])
-				ret = append(ret, s[1:2])
+				ret = append(ret, s[0:1], s[1:2])
 			} else {
-				ret = append(ret, "0")
-				ret = append(ret, s[0:1])
+				ret = append(ret, "0", s[0:1])
 			}
 		}
 	} else {
@@ -127,10 +125,10 @@ func IPToArpaDomain(ip net.IP, reverse bool, ipv6ConversionMode IPv6NotationMode
 			var b strings.Builder
 			var isLeadingZero = true
 			for j := 3; j >= 0; j-- {
-				if len(ret) < i-j || 0 > i-j {
+				if i-j < 0 || i-j > len(ret) {
 					log.Panicf("Assertion for IP length can be divided in 4 failed")
 				}
-				//noinspection GoNilness
+				// noinspection GoNilness
 				if isLeadingZero {
 					if ret[i-j] != "0" {
 						isLeadingZero = false

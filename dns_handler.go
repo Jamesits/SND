@@ -7,7 +7,7 @@ import (
 
 type handler struct{}
 
-func newDnsReplyMsg() *dns.Msg {
+func newDNSReplyMsg() *dns.Msg {
 	msg := dns.Msg{}
 
 	msg.Compress = conf.CompressDNSMessages
@@ -31,7 +31,7 @@ func finishAnswer(w *dns.ResponseWriter, r *dns.Msg) {
 		softFailIf(err)
 
 		// if answer sanity check (miekg/dns automatically does this) fails, reply with SERVFAIL
-		msg := newDnsReplyMsg()
+		msg := newDNSReplyMsg()
 		msg.SetReply(r)
 		msg.Rcode = dns.RcodeServerFailure
 		err = (*w).WriteMsg(msg)
@@ -42,7 +42,7 @@ func finishAnswer(w *dns.ResponseWriter, r *dns.Msg) {
 // TODO: force TCP for 1) clients which requests too fast; 2) non-existent answers
 // See: https://labs.apnic.net/?p=382
 func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
-	msg := newDnsReplyMsg()
+	msg := newDNSReplyMsg()
 	msg.SetReply(r)
 
 	// on function return, we send out the current answer
@@ -74,13 +74,20 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 			return
 		}
 	case dns.ClassCHAOS:
-		if strings.ToLower(r.Question[0].Name) == "version.bind." {
-			// we need to reply our software version
-			// https://serverfault.com/questions/517087/dns-how-to-find-out-which-software-a-remote-dns-server-is-running
-			handleTXTVersionRequest(this, r, msg)
-		} else {
+		switch r.Question[0].Qtype {
+		case dns.TypeTXT:
+			if strings.EqualFold(r.Question[0].Name, "version.bind.") {
+				// we need to reply our software version
+				// https://serverfault.com/questions/517087/dns-how-to-find-out-which-software-a-remote-dns-server-is-running
+				handleTXTVersionRequest(this, r, msg)
+			} else {
+				handleDefault(this, r, msg)
+			}
+			return
+
+		default:
 			handleDefault(this, r, msg)
+			return
 		}
-		return
 	}
 }

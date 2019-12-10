@@ -15,7 +15,7 @@ var configFilePath *string
 var showVersionOnly *bool
 
 // Listen on a specific endpoint
-func listen(proto string, endpoint string) {
+func listen(proto, endpoint string) {
 	log.Printf("Listening on %s %s", proto, endpoint)
 	srv := &dns.Server{Addr: endpoint, Net: proto}
 	srv.Handler = &handler{}

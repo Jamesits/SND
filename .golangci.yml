@@ -30,10 +30,6 @@ linters-settings:
     # default is false: such cases aren't reported by default.
     check-blank: true
 
-  funlen:
-    lines: 60
-    statements: 40
-
   govet:
     # report about shadowed variables
     check-shadowing: true
@@ -117,6 +113,7 @@ linters-settings:
       - dupImport # https://github.com/go-critic/go-critic/issues/845
       - ifElseChain
       - octalLiteral
+      - emptyStringTest
   dogsled:
     # checks assignments with too many blank identifiers; default is 2
     max-blank-identifiers: 2
@@ -150,7 +147,6 @@ linters:
     - dogsled
     - dupl
     - errcheck
-    - funlen
     - gochecknoinits
     - goconst
     - gocritic
