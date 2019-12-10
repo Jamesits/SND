@@ -7,6 +7,34 @@ Minimal authoritative PTR (rDNS, reverse DNS) resolver with automatic generation
 [![Build Status](https://dev.azure.com/nekomimiswitch/General/_apis/build/status/SND?branchName=master)](https://dev.azure.com/nekomimiswitch/General/_build/latest?definitionId=71&branchName=master)
 [![](https://images.microbadger.com/badges/image/jamesits/snd.svg)](https://microbadger.com/images/jamesits/snd "Get your own image badge on microbadger.com")
 
+## Motivation
+
+Say you have a large collection of IP addresses (thousands of IPv4 /24 blocks, or one IPv6 /32 block), and you want to have PTR records on all of your IPs. Writing a zonefile and hosting it using any traditional authoritative DNS server is unrealistic: the zonefile will be of multiple GBs and you need an enormous amount of memory to even load it. 
+
+SND provides you a simple alternative option: you name a base domain, and SND generates PTR records for you on the fly based on a set of pre-defined rules. 
+
+```
+1.1.168.192.in-addr.arpa.                                                 1000 IN PTR 192.168.1.1.ptr.example.com.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0.0.0.d.f.ip6.arpa. 1000 IN PTR fd00.1.0.0.0.0.0.1.ptr.example.com.
+```
+
+## Requirements
+
+### Hardware
+
+SND can run on very little processing power (Raspberry Pis are fine) and a very small memory footprint (a few MBs) although the performance will be not optimal.
+
+As of version 0.1.1, on a 4-core Intel E5-2670 VM with more than 2GiB memory, SND can process 10K QPS (burst).
+
+### Software
+
+Officially supported OS: 
+
+* Linux (kernel 4.19+ with glibc)
+* Windows (Windows Server 2016 or later, Windows 10 Desktop 1809 or later)
+
+Other OSes are not currently tested because of the lack of resources available to me.
+
 ## Usage
 
 ### Configure SND
@@ -106,8 +134,10 @@ Collect the binary in the `build` directory.
 
 ### Other OSes
 
-Other OSes except Windows are not tested because of the lack of resources available to me, though in theory it should run fine. You need to figure out how to build on these platforms on yourself if you want a native build.
-
-### Cross Compiling
+#### Cross Compilation from Linux
 
 Set the `GOOS` and `GOARCH` to the desired [values](https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63) and run `build.sh`.
+
+#### Native Build
+
+You need to figure out how to build on these platforms on yourself if you want a native build.
