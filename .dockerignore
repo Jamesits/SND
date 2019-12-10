@@ -3,3 +3,4 @@ LICENSE
 *.yaml
 *.yml
 build/
+.github/
