@@ -123,6 +123,10 @@ func fixConfig() {
 			currentConfig.PtrGenerationMode = PREPEND_LEFT_TO_RIGHT
 		case "prefix_rtl":
 			currentConfig.PtrGenerationMode = PREPEND_RIGHT_TO_LEFT
+		case "prefix_ltr_dash":
+			currentConfig.PtrGenerationMode = PREPEND_LEFT_TO_RIGHT_DASH
+		case "prefix_rtl_dash":
+			currentConfig.PtrGenerationMode = PREPEND_RIGHT_TO_LEFT_DASH
 		default:
 			log.Fatalf("Unknown mode \"%s\"", *currentConfig.PtrGenerationModeString)
 		}

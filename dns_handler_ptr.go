@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/miekg/dns"
 	"log"
 	"net"
 	"strings"
+
+	"github.com/miekg/dns"
 )
 
 func handlePTR(this *handler, r, msg *dns.Msg) {
@@ -72,6 +73,14 @@ func handlePTR(this *handler, r, msg *dns.Msg) {
 			case PREPEND_RIGHT_TO_LEFT:
 				p.WriteString(IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode))
 				p.WriteString(".")
+				p.WriteString(*netBlock.Domain)
+			case PREPEND_LEFT_TO_RIGHT_DASH:
+				p.WriteString(IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode))
+				p.WriteString("-")
+				p.WriteString(*netBlock.Domain)
+			case PREPEND_RIGHT_TO_LEFT_DASH:
+				p.WriteString(IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode))
+				p.WriteString("-")
 				p.WriteString(*netBlock.Domain)
 			default:
 				return
