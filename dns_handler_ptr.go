@@ -75,12 +75,14 @@ func handlePTR(this *handler, r, msg *dns.Msg) {
 				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
 			case PREPEND_LEFT_TO_RIGHT_DASH:
-				p.WriteString(IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode))
-				p.WriteString("-")
+				IPGenerate := (IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode))
+				p.WriteString(strings.Replace(IPGenerate, ".", "-", -1))
+				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
 			case PREPEND_RIGHT_TO_LEFT_DASH:
-				p.WriteString(IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode))
-				p.WriteString("-")
+				IPGenerate := (IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode))
+				p.WriteString(strings.Replace(IPGenerate, ".", "-", -1))
+				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
 			default:
 				return
