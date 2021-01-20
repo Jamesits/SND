@@ -8,6 +8,8 @@ const (
 	FIXED PtrGenerationMode = iota
 	PREPEND_LEFT_TO_RIGHT
 	PREPEND_RIGHT_TO_LEFT
+	PREPEND_LEFT_TO_RIGHT_DASH
+	PREPEND_RIGHT_TO_LEFT_DASH
 )
 
 type IPv6NotationMode int
