@@ -3,8 +3,8 @@ package main
 import "fmt"
 
 var versionMajor = 0
-var versionMinor = 1
-var versionRevision = 2
+var versionMinor = 2
+var versionRevision = 0
 var versionGitCommitHash string
 var versionCompileTime string
 var versionCompileHost string
