@@ -2,8 +2,6 @@
 
 Minimal authoritative PTR (rDNS, reverse DNS) resolver with automatic generation of records.
 
-**WARNING**: This piece of software is at a very early development stage and should be considered experimental. It only implements a minimal feature set to pass the RIPE automated DNS test and is by no means standard-compliant. Please don't run it in production. 
-
 [![Build Status](https://dev.azure.com/nekomimiswitch/General/_apis/build/status/SND?branchName=master)](https://dev.azure.com/nekomimiswitch/General/_build/latest?definitionId=71&branchName=master)
 [![](https://images.microbadger.com/badges/image/jamesits/snd.svg)](https://microbadger.com/images/jamesits/snd "Get your own image badge on microbadger.com")
 
