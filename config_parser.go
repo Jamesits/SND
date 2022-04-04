@@ -104,6 +104,35 @@ func fixConfig() {
 	}
 	SOARecordFillDefault(conf.DefaultSOARecord, false)
 
+	fixed_hosts := make([]*perNetConfig, 0)
+	for net, domain := range conf.PerHostConfigs {
+		netCIDR := ""
+		for i := 0; i < len(net); i++ {
+			switch net[i] {
+			case '.':
+				netCIDR = net + "/32"
+				break
+			case ':':
+				netCIDR = net + "/128"
+				break
+			}
+		}
+		if netCIDR == "" {
+			break
+		}
+		log.Printf("Loading host %s -> %s\n", netCIDR, domain)
+		mode := "fixed"
+		for _, d := range strings.Split(domain, ",") {
+			thisHost := &perNetConfig {
+				IPNetString: &netCIDR,
+				PtrGenerationModeString: &mode,
+				Domain: &d,
+			}
+			fixed_hosts = append(fixed_hosts, thisHost)
+		}
+	}
+	conf.PerNetConfigs = append(fixed_hosts, conf.PerNetConfigs...)
+
 	// note that range is byVal so we use index here
 	for _, currentConfig := range conf.PerNetConfigs {
 		// fill IPNet
