@@ -74,3 +74,8 @@ mode = "prefix_ltr"
 domain = "example.com"
 ipv6_notation = "four_hexs"
 # Default IPv6 notation is too long for you? This generates "fd00.1.0.0.0.0.0.1.example.com."
+
+[host]
+# quick way to generate a static record for a static IP
+"10.10.10.10" = "internal10.example.com"
+"10.10.10.20" = "internal20.example.com"
