@@ -21,14 +21,15 @@ const (
 
 // config file
 type config struct {
-	Listen                []*string       `toml:"listen"`
-	PerNetConfigs         []*perNetConfig `toml:"net"`
-	DefaultNSes           []*string       `toml:"ns"`
-	OverrideVersionString string          `toml:"version_string"`
-	DefaultSOARecord      *SOARecord      `toml:"SOA"`
-	DefaultTTL            uint32          `toml:"default_ttl"`
-	CompressDNSMessages   bool            `toml:"compress_dns_messages"`
-	AllowVersionReporting bool            `toml:"allow_version_reporting"`
+	Listen                []*string         `toml:"listen"`
+	PerNetConfigs         []*perNetConfig   `toml:"net"`
+	PerHostConfigs        map[string]string `toml:"host"`
+	DefaultNSes           []*string         `toml:"ns"`
+	OverrideVersionString string            `toml:"version_string"`
+	DefaultSOARecord      *SOARecord        `toml:"SOA"`
+	DefaultTTL            uint32            `toml:"default_ttl"`
+	CompressDNSMessages   bool              `toml:"compress_dns_messages"`
+	AllowVersionReporting bool              `toml:"allow_version_reporting"`
 }
 
 type SOARecord struct {
