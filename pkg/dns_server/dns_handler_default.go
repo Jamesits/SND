@@ -1,4 +1,4 @@
-package main
+package dns_server
 
 import (
 	"github.com/miekg/dns"

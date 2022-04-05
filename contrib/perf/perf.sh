@@ -1,4 +1,7 @@
-cd "$( dirname "${BASH_SOURCE[0]}" )"/..
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+cd "$( dirname "${BASH_SOURCE[0]}" )"/../..
 
 DNSPERF_DATA_FILE="build/dnsperf.txt"
 

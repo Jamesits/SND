@@ -1,57 +1,40 @@
-package main
+package config
 
 import (
+	"github.com/jamesits/libiferr/exception"
 	"log"
 	"net"
 	"strings"
 )
 
-func ensureDotAtRight(s *string) *string {
-	if !strings.HasSuffix(*s, ".") {
-		ret := *s + "."
-		return &ret
-	} else {
-		return s
-	}
-}
-
-func ensureNoDotAtLeft(s *string) *string {
-	if !strings.HasPrefix(*s, ".") {
-		ret := strings.TrimLeft(*s, ".")
-		return &ret
-	} else {
-		return s
-	}
-}
-
-func SOARecordFillDefault(r *SOARecord, useDefaultRecord bool) {
+func (config *Config) SOARecordFillDefault(r *SOARecord, useDefaultRecord bool) {
 	if useDefaultRecord {
 		if len(*r.MName) == 0 {
-			r.MName = conf.DefaultSOARecord.MName
+			r.MName = config.DefaultSOARecord.MName
 		}
 
 		if len(*r.RName) == 0 {
-			r.RName = conf.DefaultSOARecord.RName
+			r.RName = config.DefaultSOARecord.RName
 		}
 
 		if r.Serial == 0 {
-			r.Serial = conf.DefaultSOARecord.Serial
+			r.Serial = config.DefaultSOARecord.Serial
 		}
 
 		if r.Refresh == 0 {
-			r.Refresh = conf.DefaultSOARecord.Refresh
+			r.Refresh = config.DefaultSOARecord.Refresh
 		}
 
 		if r.Retry == 0 {
-			r.Retry = conf.DefaultSOARecord.Retry
+			r.Retry = config.DefaultSOARecord.Retry
 		}
 
 		if r.Expire == 0 {
-			r.Expire = conf.DefaultSOARecord.Expire
+			r.Expire = config.DefaultSOARecord.Expire
 		}
 
 		if r.TTL == 0 {
-			r.TTL = conf.DefaultSOARecord.TTL
+			r.TTL = config.DefaultSOARecord.TTL
 		}
 	} else {
 		if r.Serial == 0 {
@@ -87,33 +70,33 @@ func SOARecordFillDefault(r *SOARecord, useDefaultRecord bool) {
 	r.MName = ensureDotAtRight(r.MName)
 }
 
-// fix config and fill in defaults
-func fixConfig() {
+// fix Config and fill in defaults
+func (config *Config) FixConfig() {
 	var err error
 
-	if conf.DefaultTTL == 0 {
-		conf.DefaultTTL = 114514
+	if config.DefaultTTL == 0 {
+		config.DefaultTTL = 114514
 	}
 
-	for index, ns := range conf.DefaultNSes {
-		conf.DefaultNSes[index] = ensureDotAtRight(ns)
+	for index, ns := range config.DefaultNSes {
+		config.DefaultNSes[index] = ensureDotAtRight(ns)
 	}
 
-	if conf.DefaultSOARecord == nil {
-		conf.DefaultSOARecord = new(SOARecord)
+	if config.DefaultSOARecord == nil {
+		config.DefaultSOARecord = new(SOARecord)
 	}
-	SOARecordFillDefault(conf.DefaultSOARecord, false)
+	config.SOARecordFillDefault(config.DefaultSOARecord, false)
 
 	fixed_hosts := make([]*perNetConfig, 0)
-	for net, domain := range conf.PerHostConfigs {
+	for network, domain := range config.PerHostConfigs {
 		netCIDR := ""
-		for i := 0; i < len(net); i++ {
-			switch net[i] {
+		for i := 0; i < len(network); i++ {
+			switch network[i] {
 			case '.':
-				netCIDR = net + "/32"
+				netCIDR = network + "/32"
 				break
 			case ':':
-				netCIDR = net + "/128"
+				netCIDR = network + "/128"
 				break
 			}
 		}
@@ -123,21 +106,21 @@ func fixConfig() {
 		log.Printf("Loading host %s -> %s\n", netCIDR, domain)
 		mode := "fixed"
 		for _, d := range strings.Split(domain, ",") {
-			thisHost := &perNetConfig {
-				IPNetString: &netCIDR,
+			thisHost := &perNetConfig{
+				IPNetString:             &netCIDR,
 				PtrGenerationModeString: &mode,
-				Domain: &d,
+				Domain:                  &d,
 			}
 			fixed_hosts = append(fixed_hosts, thisHost)
 		}
 	}
-	conf.PerNetConfigs = append(fixed_hosts, conf.PerNetConfigs...)
+	config.PerNetConfigs = append(fixed_hosts, config.PerNetConfigs...)
 
 	// note that range is byVal so we use index here
-	for _, currentConfig := range conf.PerNetConfigs {
+	for _, currentConfig := range config.PerNetConfigs {
 		// fill IPNet
 		_, currentConfig.IPNet, err = net.ParseCIDR(*currentConfig.IPNetString)
-		hardFailIf(err)
+		exception.HardFailWithReason("failed to parse CIDR", err)
 
 		log.Printf("Loading network %s\n", currentConfig.IPNet.String())
 
@@ -180,14 +163,14 @@ func fixConfig() {
 
 		// fill TTL
 		if currentConfig.TTL == 0 {
-			currentConfig.TTL = conf.DefaultTTL
+			currentConfig.TTL = config.DefaultTTL
 		}
 
 		// fill SOA
 		if currentConfig.SOARecord == nil {
-			currentConfig.SOARecord = conf.DefaultSOARecord
+			currentConfig.SOARecord = config.DefaultSOARecord
 		} else {
-			SOARecordFillDefault(currentConfig.SOARecord, true)
+			config.SOARecordFillDefault(currentConfig.SOARecord, true)
 		}
 	}
 }

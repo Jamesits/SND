@@ -1,4 +1,4 @@
-package main
+package snd
 
 import "fmt"
 
@@ -10,11 +10,11 @@ var versionCompileTime string
 var versionCompileHost string
 var versionGitStatus string
 
-func getVersionNumberString() string {
+func GetVersionNumberString() string {
 	return fmt.Sprintf("%d.%d.%d", versionMajor, versionMinor, versionRevision)
 }
 
-func getVersionFullString() string {
+func GetVersionFullString() string {
 	if len(versionCompileHost) == 0 {
 		versionCompileHost = "localhost"
 	}
@@ -31,5 +31,5 @@ func getVersionFullString() string {
 		versionGitStatus = "dirty"
 	}
 
-	return fmt.Sprintf("SND/%s (+https://github.com/Jamesits/SND; Compiled on %s for commit %s (%s) at %s)", getVersionNumberString(), versionCompileHost, versionGitCommitHash, versionGitStatus, versionCompileTime)
+	return fmt.Sprintf("SND/%s (+https://github.com/Jamesits/SND; Compiled on %s for commit %s (%s) at %s)", GetVersionNumberString(), versionCompileHost, versionGitCommitHash, versionGitStatus, versionCompileTime)
 }

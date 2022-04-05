@@ -4,3 +4,4 @@ LICENSE
 *.yml
 build/
 .github/
+.idea/

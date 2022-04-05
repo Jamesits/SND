@@ -1,7 +1,8 @@
-package main
+package dns_server
 
 import (
 	"fmt"
+	"github.com/jamesits/snd/pkg/config"
 	"log"
 	"net"
 	"strings"
@@ -50,10 +51,10 @@ func handlePTR(this *handler, r, msg *dns.Msg) {
 		ipaddr = ipaddr.To4()
 	}
 
-	// find a matching config
+	// find a matching Config
 	// TODO: optimize to less then O(n)
 	found := false
-	for _, netBlock := range conf.PerNetConfigs {
+	for _, netBlock := range this.config.PerNetConfigs {
 		if netBlock.IPNet.Contains(ipaddr) {
 			found = true
 
@@ -64,23 +65,23 @@ func handlePTR(this *handler, r, msg *dns.Msg) {
 			}
 
 			switch netBlock.PtrGenerationMode {
-			case FIXED:
+			case config.FIXED:
 				p.WriteString(*netBlock.Domain)
-			case PREPEND_LEFT_TO_RIGHT:
+			case config.PREPEND_LEFT_TO_RIGHT:
 				p.WriteString(IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode))
 				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
-			case PREPEND_RIGHT_TO_LEFT:
+			case config.PREPEND_RIGHT_TO_LEFT:
 				p.WriteString(IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode))
 				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
-			case PREPEND_LEFT_TO_RIGHT_DASH:
-				IPGenerate := (IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode))
+			case config.PREPEND_LEFT_TO_RIGHT_DASH:
+				IPGenerate := IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode)
 				p.WriteString(strings.Replace(IPGenerate, ".", "-", -1))
 				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
-			case PREPEND_RIGHT_TO_LEFT_DASH:
-				IPGenerate := (IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode))
+			case config.PREPEND_RIGHT_TO_LEFT_DASH:
+				IPGenerate := IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode)
 				p.WriteString(strings.Replace(IPGenerate, ".", "-", -1))
 				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
@@ -104,7 +105,7 @@ func handlePTR(this *handler, r, msg *dns.Msg) {
 	}
 }
 
-func IPToArpaDomain(ip net.IP, reverse bool, ipv6ConversionMode IPv6NotationMode) string {
+func IPToArpaDomain(ip net.IP, reverse bool, ipv6ConversionMode config.IPv6NotationMode) string {
 	ipv4 := ip.To4()
 	var ret []string
 
@@ -127,9 +128,9 @@ func IPToArpaDomain(ip net.IP, reverse bool, ipv6ConversionMode IPv6NotationMode
 	}
 
 	switch ipv6ConversionMode {
-	case ARPA_NOTATION:
+	case config.ARPA_NOTATION:
 		break
-	case FOUR_HEXS_NOTATION:
+	case config.FOUR_HEXS_NOTATION:
 		reverse = !reverse // in this mode, ret is processed in reverse, so we need to reverse it again before returning
 		var ret2 []string
 		for i := len(ret) - 1; i >= 0; i -= 4 {

@@ -1,4 +1,4 @@
-package main
+package config
 
 import "net"
 
@@ -19,8 +19,8 @@ const (
 	FOUR_HEXS_NOTATION
 )
 
-// config file
-type config struct {
+// Config file
+type Config struct {
 	Listen                []*string         `toml:"listen"`
 	PerNetConfigs         []*perNetConfig   `toml:"net"`
 	PerHostConfigs        map[string]string `toml:"host"`

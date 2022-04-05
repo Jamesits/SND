@@ -1,16 +1,24 @@
-package main
+package dns_server
 
 import (
+	"github.com/jamesits/libiferr/exception"
+	"github.com/jamesits/snd/pkg/config"
 	"github.com/miekg/dns"
 	"strings"
 )
 
-type handler struct{}
+type handler struct {
+	config *config.Config
+}
 
-func newDNSReplyMsg() *dns.Msg {
+func NewHandler(config *config.Config) *handler {
+	return &handler{config: config}
+}
+
+func (this *handler) newDNSReplyMsg() *dns.Msg {
 	msg := dns.Msg{}
 
-	msg.Compress = conf.CompressDNSMessages
+	msg.Compress = this.config.CompressDNSMessages
 
 	// this is an authoritative DNS server
 	msg.Authoritative = true
@@ -25,28 +33,28 @@ func newDNSReplyMsg() *dns.Msg {
 }
 
 // send out the generated answer, and if the answer is not correct, send out a SERVFAIL
-func finishAnswer(w *dns.ResponseWriter, r *dns.Msg) {
+func (this *handler) finishAnswer(w *dns.ResponseWriter, r *dns.Msg) {
 	err := (*w).WriteMsg(r)
 	if err != nil {
-		softFailIf(err)
+		exception.SoftFailWithReason("failed to send primary DNS answer", err)
 
 		// if answer sanity check (miekg/dns automatically does this) fails, reply with SERVFAIL
-		msg := newDNSReplyMsg()
+		msg := this.newDNSReplyMsg()
 		msg.SetReply(r)
 		msg.Rcode = dns.RcodeServerFailure
 		err = (*w).WriteMsg(msg)
-		softFailIf(err)
+		exception.SoftFailWithReason("failed to send secondary DNS answer", err)
 	}
 }
 
 // TODO: force TCP for 1) clients which requests too fast; 2) non-existent answers
 // See: https://labs.apnic.net/?p=382
 func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
-	msg := newDNSReplyMsg()
+	msg := this.newDNSReplyMsg()
 	msg.SetReply(r)
 
 	// on function return, we send out the current answer
-	defer finishAnswer(&w, msg)
+	defer this.finishAnswer(&w, msg)
 
 	// sanity check
 	if len(r.Question) != 1 {
