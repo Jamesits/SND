@@ -6,3 +6,5 @@ LICENSE
 /dist
 .github/
 .idea/
+
+!/.goreleaser.yaml
