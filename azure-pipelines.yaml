@@ -35,7 +35,7 @@ jobs:
       - bash: |
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update
-          sudo apt-get install -y upx
+          sudo apt-get install -y upx libcap2-bin
         displayName: 'Install Dependencies'
 
       - task: goreleaser@0

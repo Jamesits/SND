@@ -10,6 +10,13 @@ env:
   - "CGO_ENABLED=0"
 #  - "GOFLAGS=-workfile=off" # Golang 1.18+
 
+gomod:
+  proxy: true
+  env:
+    - "GOPROXY=https://proxy.golang.org,direct"
+    - "GOSUMDB=sum.golang.org"
+    - "GOPRIVATE=github.com/jamesits/snd"
+
 builds:
   - id: "snd"
     main: "./cmd/snd"
@@ -46,15 +53,54 @@ builds:
       - "static_build"
     hooks:
       post:
-        - "upx \"{{ .Path }}\""
-        - "sudo setcap 'cap_net_bind_service=+ep' \"{{ .Path }}\""
+        - "./contrib/build/upx \"{{ .Path }}\""
+        - "./contrib/build/setcap 'cap_net_bind_service=+ep' \"{{ .Path }}\""
 
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
 
-gomod:
-  proxy: true
-  env:
-    - "GOPROXY=https://proxy.golang.org,direct"
-    - "GOSUMDB=sum.golang.org"
-    - "GOPRIVATE=github.com/jamesits/snd"
+archives:
+  - id: "release"
+    format: "tar.xz"
+    wrap_in_directory: "true"
+    format_overrides:
+      - goos: "windows"
+        format: "zip"
+    replacements:
+      darwin: "macOS"
+      linux: "Linux"
+      windows: "Windows"
+      386: "i686"
+      amd64: "x86_64"
+
+nfpms:
+  - id: "snd"
+    package_name: "snd"
+    vendor: "James Swineson"
+    homepage: "https://github.com/Jamesits/SND"
+    maintainer: "James Swineson <github@public.swineson.me>"
+    description: |-
+      Minimal authoritative PTR (rDNS, reverse DNS) resolver with automatic generation of records.
+    license: "MIT License"
+    formats:
+      - "apk"
+      - "deb"
+      - "rpm"
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: "sha256"
+
+changelog:
+  sort: "asc"
+  filters:
+    exclude:
+      - "^doc:"
+      - "^docs:"
+      - "^test:"
+      - "^cleanup:"
+      - "^ci:"
+      - "typo"
+      - "readme"
+      - "README"
+      - "comment"

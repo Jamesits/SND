@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if command -v sudo >/dev/null 2>&1; then
+    exec sudo setcap "$@"
+else
+    exec setcap "$@"
+fi

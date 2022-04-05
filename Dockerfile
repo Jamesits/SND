@@ -3,7 +3,7 @@ FROM golang:1.18-buster as builder
 
 ARG GOPATH=/tmp/go
 RUN apt-get update -y \
-    && apt-get install -y sudo upx libcap2-bin \
+    && apt-get install -y upx libcap2-bin \
     && go install github.com/goreleaser/goreleaser@latest
 
 WORKDIR /root/snd

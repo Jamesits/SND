@@ -29,4 +29,4 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: build --snapshot --rm-dist
+          args: build --single-target --snapshot --rm-dist
