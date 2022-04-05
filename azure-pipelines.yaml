@@ -51,4 +51,4 @@ jobs:
       - task: PublishBuildArtifacts@1
         displayName: 'Publish Artifact'
         inputs:
-          ArtifactName: 'snd-$(GOOS)-$(GOARCH)'
+          ArtifactName: 'snd'
