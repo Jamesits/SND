@@ -46,7 +46,7 @@ jobs:
           workdir: '$(Build.SourcesDirectory)'
 
       - bash: |
-          cp dist/* ${BUILD_ARTIFACTSTAGINGDIRECTORY}
+          cp -rv dist/* ${BUILD_ARTIFACTSTAGINGDIRECTORY}
         displayName: 'Copy Artifact'
 
       - task: PublishBuildArtifacts@1
