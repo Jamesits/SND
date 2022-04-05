@@ -32,7 +32,7 @@ func main() {
 		log.Println(version.GetVersionFullString())
 	}
 
-	// parse Config file
+	// parse config file
 	conf = &config.Config{}
 	metaData, err := toml.DecodeFile(*configFilePath, conf)
 	exception.HardFailWithReason("failed to read the config file", err)
@@ -42,7 +42,7 @@ func main() {
 		log.Printf("Unknown key %q in the Config file, maybe a typo?", key.String())
 	}
 
-	// fix Config and fill in defaults
+	// fix config and fill in defaults
 	conf.FixConfig()
 
 	// listen on all the configured listeners
