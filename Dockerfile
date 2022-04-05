@@ -1,6 +1,7 @@
 # build stage
 FROM golang:1.18-buster as builder
 
+ARG GOPATH=/tmp/go
 WORKDIR /root/snd
 COPY . /root/snd/
 RUN go install github.com/goreleaser/goreleaser@latest \

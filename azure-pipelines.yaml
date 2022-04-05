@@ -1,6 +1,7 @@
 name: $(SourceBranchName)-$(Date:yyyyMMdd).$(Rev:r)
 variables:
   GOVER: '1.17.8'
+  GOPATH: '/tmp/go'
 
 trigger:
   batch: true

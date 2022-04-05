@@ -8,6 +8,9 @@ on:
 permissions:
   contents: write
 
+env:
+  GOPATH: /tmp/go
+
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
