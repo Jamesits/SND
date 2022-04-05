@@ -1,0 +1,55 @@
+before:
+  hooks:
+    - "go mod tidy"
+    - "go generate ./..."
+
+env:
+  - "GO111MODULE=on"
+  - "CGO_ENABLED=0"
+#  - "GOFLAGS=-workfile=off" # Golang 1.18+
+
+builds:
+  - id: "snd"
+    main: "./cmd/snd"
+    binary: "{{ .ProjectName }}_{{ .Target }}/snd"
+    no_unique_dist_dir: true
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    goos:
+      - "linux"
+      - "windows"
+      - "darwin"
+    goarch:
+      - "amd64"
+      - "arm"
+      - "arm64"
+    flags:
+      - "-v"
+      - "-trimpath"
+    asmflags:
+      - "all=-trimpath={{ .Env.GOPATH }}"
+    gcflags:
+      - "all=-trimpath={{ .Env.GOPATH }}"
+    ldflags:
+      - "-X 'github.com/jamesits/snd/pkg/version.version={{ .Version }}'"
+      - "-X 'github.com/jamesits/snd/pkg/version.versionGitCommitHash={{ .Commit }}'"
+      - "-X 'github.com/jamesits/snd/pkg/version.versionCompileTime={{ .CommitDate }}'"
+      - "-X 'github.com/jamesits/snd/pkg/version.BuiltBy=goreleaser'"
+      - "-s"
+      - "-w"
+    tags:
+      - "static"
+      - "static_build"
+    hooks:
+      post:
+        - "upx "{ { .Path } }""
+        - "setcap 'cap_net_bind_service=+ep' "{ { .Path } }""
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+gomod:
+  proxy: true
+  env:
+    - "GOPROXY=https://proxy.golang.org,direct"
+    - "GOSUMDB=sum.golang.org"
+    - "GOPRIVATE=github.com/jamesits/snd"

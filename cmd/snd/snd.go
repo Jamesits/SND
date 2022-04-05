@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/BurntSushi/toml"
 	"github.com/jamesits/libiferr/exception"
-	"github.com/jamesits/snd"
 	"github.com/jamesits/snd/pkg/config"
 	"github.com/jamesits/snd/pkg/dns_server"
+	"github.com/jamesits/snd/pkg/version"
 	"log"
 	"strings"
 	"sync"
@@ -26,10 +26,10 @@ func main() {
 	flag.Parse()
 
 	if *showVersionOnly {
-		fmt.Println(snd.GetVersionFullString())
+		fmt.Println(version.GetVersionFullString())
 		return
 	} else {
-		log.Println(snd.GetVersionFullString())
+		log.Println(version.GetVersionFullString())
 	}
 
 	// parse Config file

@@ -25,49 +25,30 @@ jobs:
       clean: all
     timeoutInMinutes: 15
 
-    strategy:
-      matrix:
-        linux-amd64:
-          GOOS: 'linux'
-          GOARCH: 'amd64'
-          FILENAME_SUFFIX: ''
-        linux-arm:
-          GOOS: 'linux'
-          GOARCH: 'arm'
-          FILENAME_SUFFIX: ''
-        linux-arm64:
-          GOOS: 'linux'
-          GOARCH: 'arm64'
-          FILENAME_SUFFIX: ''
-        windows-amd64:
-          GOOS: 'windows'
-          GOARCH: 'amd64'
-          FILENAME_SUFFIX: '.exe'
-        darwin-amd64:
-          GOOS: 'darwin'
-          GOARCH: 'amd64'
-          FILENAME_SUFFIX: ''
-
     steps:
-    - task: GoTool@0
-      displayName: 'Use Go'
-      inputs:
-        version: $(GOVER)
+      - task: GoTool@0
+        displayName: 'Use Go'
+        inputs:
+          version: $(GOVER)
 
-    - bash: |
-        export DEBIAN_FRONTEND=noninteractive
-        sudo apt-get update
-        sudo apt-get install -y upx
-      displayName: 'Install Dependencies'
-    - bash: |
-        export GOPATH="/tmp/go"
-        export GOBIN="/opt/hostedtoolcache/go/${GOVER}/x64/bin"
-        export OUT_FILE="snd-${GOOS}-${GOARCH}${FILENAME_SUFFIX}"
-        ./build.sh
-        cp build/snd* ${BUILD_ARTIFACTSTAGINGDIRECTORY}
-      displayName: 'Build'
+      - bash: |
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get update
+          sudo apt-get install -y upx
+        displayName: 'Install Dependencies'
 
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact'
-      inputs:
-        ArtifactName: 'snd-$(GOOS)-$(GOARCH)'
+      - task: goreleaser@0
+        inputs:
+          version: 'latest'
+          distribution: 'goreleaser'
+          args: 'build --snapshot --rm-dist'
+          workdir: '$(Build.SourcesDirectory)'
+
+      - bash: |
+          cp dist/* ${BUILD_ARTIFACTSTAGINGDIRECTORY}
+        displayName: 'Copy Artifact'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact'
+        inputs:
+          ArtifactName: 'snd-$(GOOS)-$(GOARCH)'

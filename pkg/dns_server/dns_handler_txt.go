@@ -1,7 +1,7 @@
 package dns_server
 
 import (
-	"github.com/jamesits/snd"
+	"github.com/jamesits/snd/pkg/version"
 	"github.com/miekg/dns"
 	"log"
 )
@@ -17,7 +17,7 @@ func handleTXTVersionRequest(this *handler, r, msg *dns.Msg) {
 
 	var versionString string
 	if len(this.config.OverrideVersionString) == 0 {
-		versionString = snd.GetVersionFullString()
+		versionString = version.GetVersionFullString()
 	} else {
 		versionString = this.config.OverrideVersionString
 	}

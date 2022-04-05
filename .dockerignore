@@ -2,6 +2,7 @@
 LICENSE
 *.yaml
 *.yml
-build/
+/build
+/dist
 .github/
 .idea/
