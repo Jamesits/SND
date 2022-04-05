@@ -47,7 +47,7 @@ builds:
     hooks:
       post:
         - "upx \"{{ .Path }}\""
-        - "setcap 'cap_net_bind_service=+ep' \"{{ .Path }}\""
+        - "sudo setcap 'cap_net_bind_service=+ep' \"{{ .Path }}\""
 
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
