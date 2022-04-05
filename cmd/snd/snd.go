@@ -21,7 +21,7 @@ var mainThreadWaitGroup = &sync.WaitGroup{}
 func main() {
 	// parse flags
 	var err error
-	configFilePath = flag.String("Config", "/etc/snd/Config.toml", "Config directory")
+	configFilePath = flag.String("config", "/etc/snd/config.toml", "Config directory")
 	showVersionOnly = flag.Bool("version", false, "show version and quit")
 	flag.Parse()
 
