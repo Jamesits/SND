@@ -119,22 +119,8 @@ Notes:
 
 Golang 1.13.5 or later is officially supported. Before starting, make sure the `GOROOT` and `GOPATH` environment variables are set correctly and there is a `go` binary is in your `PATH`.
 
-### Linux
-
 ```shell
 git clone https://github.com/Jamesits/SND.git
 cd SND
-./build.sh
+go build github.com/jamesits/snd/cmd/snd
 ```
-
-Collect the binary in the `build` directory.
-
-### Other OSes
-
-#### Cross Compilation from Linux
-
-Set the `GOOS` and `GOARCH` to the desired [values](https://gist.github.com/asukakenji/f15ba7e588ac42795f421b48b8aede63) and run `build.sh`.
-
-#### Native Build
-
-You need to figure out how to build on these platforms on yourself if you want a native build.
