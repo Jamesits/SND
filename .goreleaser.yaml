@@ -37,7 +37,6 @@ builds:
     flags:
       - "-v"
       - "-trimpath"
-      - "-buildinfo=false"
       - "-buildvcs=false"
     asmflags:
       - "all=-trimpath={{ .Env.GOPATH }}"
