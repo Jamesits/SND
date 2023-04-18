@@ -1,5 +1,5 @@
 # build stage
-FROM golang:1.20-buster as builder
+FROM golang:1.20-bullseye as builder
 
 ARG GOPATH=/tmp/go
 RUN apt-get update -y \
@@ -11,8 +11,8 @@ COPY . /root/snd/
 RUN goreleaser build --single-target --id "snd" --output "dist/snd" --snapshot --rm-dist
 
 # production stage
-FROM debian:buster-slim
-LABEL maintainer="docker@public.swineson.me"
+FROM debian:bullseye-slim
+LABEL org.opencontainers.image.authors="docker@public.swineson.me"
 
 # Import the user and group files from the builder.
 COPY --from=builder /etc/passwd /etc/group /etc/
