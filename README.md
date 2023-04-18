@@ -117,7 +117,8 @@ Notes:
 
 ## Compilation
 
-Golang 1.13.5 or later is officially supported. Before starting, make sure the `GOROOT` and `GOPATH` environment variables are set correctly and there is a `go` binary is in your `PATH`.
+Golang 1.20.2 or later is officially supported. Before starting, make sure the `GOROOT` and `GOPATH` environment
+variables are set correctly and there is a `go` binary is in your `PATH`.
 
 ```shell
 git clone https://github.com/Jamesits/SND.git

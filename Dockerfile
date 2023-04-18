@@ -1,5 +1,5 @@
 # build stage
-FROM golang:1.18-buster as builder
+FROM golang:1.20-buster as builder
 
 ARG GOPATH=/tmp/go
 RUN apt-get update -y \

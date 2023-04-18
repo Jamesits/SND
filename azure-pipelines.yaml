@@ -1,6 +1,6 @@
 name: $(SourceBranchName)-$(Date:yyyyMMdd).$(Rev:r)
 variables:
-  GOVER: '1.17.8'
+  GOVER: '1.20.3'
   GOPATH: '/tmp/go'
 
 trigger:
@@ -42,7 +42,7 @@ jobs:
         inputs:
           version: 'latest'
           distribution: 'goreleaser'
-          args: 'build --snapshot --rm-dist'
+          args: 'build --snapshot --clean'
           workdir: '$(Build.SourcesDirectory)'
 
       - bash: |
