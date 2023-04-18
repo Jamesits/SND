@@ -48,10 +48,10 @@ func main() {
 	// listen on all the configured listeners
 	for _, elem := range conf.Listen {
 		r := strings.SplitN(*elem, ":", 2)
+		mainThreadWaitGroup.Add(1)
 		go func() {
-			mainThreadWaitGroup.Add(1)
 			defer mainThreadWaitGroup.Done()
-			go dns_server.ListenSync(conf, r[0], r[1])
+			dns_server.ListenSync(conf, r[0], r[1])
 		}()
 	}
 
