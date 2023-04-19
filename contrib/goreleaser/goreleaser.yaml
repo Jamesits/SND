@@ -88,8 +88,6 @@ nfpms:
       - "termux.deb"
       - "archlinux"
     contents:
-      - src: "dist/{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}/snd"
-        dst: "/usr/bin/snd"
       - src: "contrib/config/config.toml"
         dst: "/etc/snd/config.toml"
         type: "config|noreplace"

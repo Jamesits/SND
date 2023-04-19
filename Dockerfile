@@ -8,7 +8,7 @@ RUN apt-get update -y \
 
 WORKDIR /root/snd
 COPY . /root/snd/
-RUN goreleaser build --single-target --id "snd" --output "dist/snd" --snapshot --rm-dist
+RUN goreleaser build --config contrib/goreleaser/goreleaser.yaml --single-target --id "snd" --output "dist/snd" --snapshot --clean
 
 # production stage
 FROM debian:bullseye-slim
