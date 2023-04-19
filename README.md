@@ -37,9 +37,11 @@ Other OSes are not currently tested because of the lack of resources available t
 
 ### Configure SND
 
-Copy over the self-documented [example config](examples/config.toml) and tweak it for your own need. Please do not leave any `example.com` things in your own config. Remove what you don't need. 
+Copy over the self-documented [example config](contrib/config/config.toml) and tweak it for your own need. Please do not
+leave any `example.com` things in your own config. Remove what you don't need.
 
-Currently no strict config file format checking is implemented -- you might crash the program if some important keys are missing. 
+Currently no strict config file format checking is implemented -- you might crash the program if some important keys are
+missing.
 
 ### Set up SND
 

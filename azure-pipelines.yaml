@@ -8,14 +8,14 @@ trigger:
   branches:
     include: [ "master", "develop" ]
   paths:
-    exclude: [ "README.md", "LICENSE", ".github/*", "examples/*", ".golangci.yml" ]
+    exclude: [ "README.md", "LICENSE", ".github/*", "contrib/config/*", ".golangci.yml" ]
 
 pr:
   autoCancel: true
   branches:
     include: [ "master", "develop" ]
   paths:
-    exclude: [ "README.md", "LICENSE", ".github/*", "examples/*", ".golangci.yml" ]
+    exclude: [ "README.md", "LICENSE", ".github/*", "contrib/config/*", ".golangci.yml" ]
 
 jobs:
   - job: binary
@@ -42,7 +42,7 @@ jobs:
         inputs:
           version: 'latest'
           distribution: 'goreleaser'
-          args: 'build --snapshot --clean'
+          args: 'build --config contrib/goreleaser/goreleaser.yaml --snapshot --clean'
           workdir: '$(Build.SourcesDirectory)'
 
       - bash: |

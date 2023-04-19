@@ -1,0 +1,83 @@
+# This is an example config of SND.
+
+listen = [
+    # protocol:ip.addr:port
+    "tcp::53",
+    "udp::53",
+]
+
+# set to the domain names of your authoritive DNS servers
+NS = [
+    "ns1.example.com.",
+    "ns2.example.com.",
+]
+
+# use DNS pointer compression
+compress_dns_messages = true
+
+# disable querying DNS server version by a DNS request
+allow_version_reporting = false
+# alternatively, you can fake the version string
+# version_string = "bind-⑨"
+
+# This will become the default SOA record for all your networks, unless overrided.
+# Make it exactly the same across all servers.
+[SOA]
+# your primary NS, usually the domain name of one of your NS servers, dot at end
+MName = "ns1.example.com."
+# your email in dot notation, dot at end
+RName = "dnsmaster.example.com."
+## Optional fields, see Wikipedia for explanation
+# Serial = 1970010101
+# Refresh = 86400
+# Retry = 7200
+# Expire = 3600000
+# TTL = 172800
+
+# Define your nets here
+# In current version, the IP address requested will be matched from top to bottom, so write small blocks in the front
+# if the net blocks you define overlaps.
+
+[[net]]
+net = "192.168.1.0/24"
+mode = "prefix_ltr"
+domain = "example.com"
+# Generates "192.168.1.1.example.com."
+
+[[net]]
+net = "192.168.2.0/24"
+mode = "prefix_rtl"
+domain = "example.com"
+# Generates "1.2.168.192.example.com."
+
+[[net]]
+net = "192.168.3.0/24"
+mode = "fixed"
+domain = "example.com"
+# Generates "example.com."
+
+[[net]]
+net = "192.168.4.0/24"
+mode = "prefix_ltr"
+domain = "example.com"
+domain_prefix = "yes."
+# Generates "yes.192.168.4.1.example.com."
+# Note: domain_prefix is applied without any sanity check. Make sure it doesn't violate the rules.
+
+[[net]]
+net = "fd00::/48"
+mode = "prefix_ltr"
+domain = "example.com"
+# Works for IPv6 too! Generates "f.d.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.example.com."
+
+[[net]]
+net = "fd00:1::/48"
+mode = "prefix_ltr"
+domain = "example.com"
+ipv6_notation = "four_hexs"
+# Default IPv6 notation is too long for you? This generates "fd00.1.0.0.0.0.0.1.example.com."
+
+[host]
+# quick way to generate a static record for a static IP
+"10.10.10.10" = "internal10.example.com"
+"10.10.10.20" = "internal20.example.com"

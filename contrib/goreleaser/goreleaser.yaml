@@ -8,7 +8,7 @@ before:
 env:
   - "GO111MODULE=on"
   - "CGO_ENABLED=0"
-#  - "GOFLAGS=-workfile=off" # Golang 1.18+
+  - "GOFLAGS=-workfile=off" # Golang 1.18+
 
 gomod:
   proxy: true
@@ -68,6 +68,9 @@ archives:
       - goos: "windows"
         format: "zip"
     name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    files:
+      - src: "contrib/config/config.toml"
+        dst: "config.toml"
 
 nfpms:
   - id: "snd"
@@ -82,6 +85,14 @@ nfpms:
       - "apk"
       - "deb"
       - "rpm"
+      - "termux.deb"
+      - "archlinux"
+    contents:
+      - src: "snd"
+        dst: "/usr/bin/snd"
+      - src: "contrib/config/config.toml"
+        dst: "/etc/snd/config.toml"
+        type: "config|noreplace"
 
 checksum:
   name_template: "checksums.txt"
