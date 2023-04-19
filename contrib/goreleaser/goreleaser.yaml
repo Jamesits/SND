@@ -8,10 +8,10 @@ before:
 env:
   - "GO111MODULE=on"
   - "CGO_ENABLED=0"
-  - "GOFLAGS=-workfile=off" # Golang 1.18+
 
 gomod:
   proxy: true
+  mod: mod
   env:
     - "GOPROXY=https://proxy.golang.org,direct"
     - "GOSUMDB=sum.golang.org"
@@ -20,8 +20,7 @@ gomod:
 builds:
   - id: "snd"
     main: "./cmd/snd"
-    binary: "{{ .ProjectName }}_{{ .Target }}/snd"
-    no_unique_dist_dir: true
+    binary: "snd"
     mod_timestamp: "{{ .CommitTimestamp }}"
     goos:
       - "linux"
@@ -63,7 +62,8 @@ snapshot:
 archives:
   - id: "release"
     format: "tar.xz"
-    wrap_in_directory: "true"
+    wrap_in_directory: true
+    rlcp: true
     format_overrides:
       - goos: "windows"
         format: "zip"
