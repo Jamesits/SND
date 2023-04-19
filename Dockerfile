@@ -18,7 +18,7 @@ LABEL org.opencontainers.image.authors="docker@public.swineson.me"
 COPY --from=builder /etc/passwd /etc/group /etc/
 
 COPY --from=builder /root/snd/dist/snd /usr/local/bin/
-COPY --from=builder /root/snd/examples/config.toml /etc/snd/
+COPY --from=builder /root/snd/contrib/config/config.toml /etc/snd/
 
 # nope
 # See: https://github.com/moby/moby/issues/8460
