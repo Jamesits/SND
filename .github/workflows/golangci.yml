@@ -13,7 +13,7 @@ jobs:
   golangci:
     strategy:
       matrix:
-        go: [ "1.19" ] # 1.20 causes `failed to load package goarch: could not load export data: cannot import "internal/goarch"`
+        go: [ "1.20" ]
         os: [ "ubuntu-latest" ]
     name: lint
     runs-on: ${{ matrix.os }}
@@ -30,5 +30,4 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          version: "v1.29"
           only-new-issues: true
