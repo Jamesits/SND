@@ -85,6 +85,16 @@ func handlePTR(this *handler, r, msg *dns.Msg) {
 				p.WriteString(strings.Replace(IPGenerate, ".", "-", -1))
 				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
+			case config.PREPEND_RIGHT_TO_LEFT_ONLYIP:
+            	IPGenerate := IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode)
+            	p.WriteString(strings.Replace(IPGenerate, ".", "", -1))
+            	p.WriteString(".")
+            	p.WriteString(*netBlock.Domain)
+            case config.PREPEND_LEFT_TO_RIGHT_ONLYIP:
+            	IPGenerate := IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode)
+            	p.WriteString(strings.Replace(IPGenerate, ".", "", -1))
+            	p.WriteString(".")
+            	p.WriteString(*netBlock.Domain)
 			default:
 				return
 			}

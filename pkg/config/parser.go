@@ -139,6 +139,10 @@ func (config *Config) FixConfig() {
 			currentConfig.PtrGenerationMode = PREPEND_LEFT_TO_RIGHT_DASH
 		case "prefix_rtl_dash":
 			currentConfig.PtrGenerationMode = PREPEND_RIGHT_TO_LEFT_DASH
+		case "prefix_ltr_onlyip":
+        	currentConfig.PtrGenerationMode = PREPEND_LEFT_TO_RIGHT_ONLYIP
+        case "prefix_rtl_onlyip":
+        	currentConfig.PtrGenerationMode = PREPEND_RIGHT_TO_LEFT_ONLYIP
 		default:
 			log.Fatalf("Unknown mode \"%s\"", *currentConfig.PtrGenerationModeString)
 		}
