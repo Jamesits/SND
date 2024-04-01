@@ -6,7 +6,7 @@ import (
 )
 
 // simply replies NOTIMPL
-func handleDefault(handler *Handler, r, msg *dns.Msg) {
+func handleDefault(handler *Handler, _, msg *dns.Msg) {
 	if handler.config.Debug {
 		log.Printf("%d %s not implemented\n", msg.Question[0].Qtype, msg.Question[0].Name)
 	}
