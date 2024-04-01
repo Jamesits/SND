@@ -88,7 +88,7 @@ func (config *Config) FixConfig() {
 	}
 	config.SOARecordFillDefault(config.DefaultSOARecord, false)
 
-	fixedHosts := make([]*perNetConfig, 0)
+	fixedHosts := make([]*PerNetConfig, 0)
 	for network, domain := range config.PerHostConfigs {
 		netCIDR := ""
 		for i := 0; i < len(network); i++ {
@@ -107,7 +107,7 @@ func (config *Config) FixConfig() {
 		log.Printf("Loading host %s -> %s\n", netCIDR, domain)
 		mode := "fixed"
 		for _, d := range strings.Split(domain, ",") {
-			thisHost := &perNetConfig{
+			thisHost := &PerNetConfig{
 				IPNetString:             &netCIDR,
 				PtrGenerationModeString: &mode,
 				Domain:                  &d,
@@ -177,18 +177,29 @@ func (config *Config) FixConfig() {
 		} else {
 			config.SOARecordFillDefault(currentConfig.SOARecord, true)
 		}
+
+		// Add configuration to dedicated list
+		if strings.Contains(*currentConfig.IPNetString, ":") {
+			config.PerIPv6NetConfigs = append(config.PerIPv6NetConfigs, currentConfig)
+		} else {
+			config.PerIPv4NetConfigs = append(config.PerIPv4NetConfigs, currentConfig)
+		}
 	}
 
-	slices.SortFunc(config.PerNetConfigs, func(a, b *perNetConfig) int {
-		var aOnes, _ = a.IPNet.Mask.Size()
-		var bOnes, _ = b.IPNet.Mask.Size()
+	slices.SortFunc(config.PerNetConfigs, subnetSortingFunc)
+	slices.SortFunc(config.PerIPv4NetConfigs, subnetSortingFunc)
+	slices.SortFunc(config.PerIPv6NetConfigs, subnetSortingFunc)
+}
 
-		if aOnes > bOnes {
-			return -1
-		}
-		if aOnes < bOnes {
-			return 1
-		}
-		return 0
-	})
+func subnetSortingFunc(a, b *PerNetConfig) int {
+	var aOnes, _ = a.IPNet.Mask.Size()
+	var bOnes, _ = b.IPNet.Mask.Size()
+
+	if aOnes > bOnes {
+		return -1
+	}
+	if aOnes < bOnes {
+		return 1
+	}
+	return 0
 }

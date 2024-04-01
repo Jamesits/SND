@@ -51,15 +51,18 @@ func handlePTR(handler *Handler, r, msg *dns.Msg) {
 		}
 		return
 	}
+
 	ipaddr := net.ParseIP(strings.TrimRight(b.String(), split))
+	var lookupTable = &handler.config.PerIPv6NetConfigs
 	if split == "." {
 		ipaddr = ipaddr.To4()
+		lookupTable = &handler.config.PerIPv4NetConfigs
 	}
 
 	// find a matching Config
 	// TODO: optimize to less then O(n)
 	found := false
-	for _, netBlock := range handler.config.PerNetConfigs {
+	for _, netBlock := range *lookupTable {
 		if netBlock.IPNet.Contains(ipaddr) {
 			found = true
 
