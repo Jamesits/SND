@@ -140,9 +140,9 @@ func (config *Config) FixConfig() {
 		case "prefix_rtl_dash":
 			currentConfig.PtrGenerationMode = PREPEND_RIGHT_TO_LEFT_DASH
 		case "prefix_ltr_onlyip":
-        	currentConfig.PtrGenerationMode = PREPEND_LEFT_TO_RIGHT_ONLYIP
-        case "prefix_rtl_onlyip":
-        	currentConfig.PtrGenerationMode = PREPEND_RIGHT_TO_LEFT_ONLYIP
+			currentConfig.PtrGenerationMode = PREPEND_LEFT_TO_RIGHT_ONLYIP
+		case "prefix_rtl_onlyip":
+			currentConfig.PtrGenerationMode = PREPEND_RIGHT_TO_LEFT_ONLYIP
 		default:
 			log.Fatalf("Unknown mode \"%s\"", *currentConfig.PtrGenerationModeString)
 		}
@@ -177,4 +177,17 @@ func (config *Config) FixConfig() {
 			config.SOARecordFillDefault(currentConfig.SOARecord, true)
 		}
 	}
+
+	slices.SortFunc(config.PerNetConfigs, func(a, b *perNetConfig) int {
+		var aOnes, _ = a.IPNet.Mask.Size()
+		var bOnes, _ = b.IPNet.Mask.Size()
+
+		if aOnes > bOnes {
+			return -1
+		}
+		if aOnes < bOnes {
+			return 1
+		}
+		return 0
+	})
 }
