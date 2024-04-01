@@ -19,8 +19,6 @@ var showVersionOnly *bool
 var mainThreadWaitGroup = &sync.WaitGroup{}
 
 func main() {
-	// parse flags
-	var err error
 	configFilePath = flag.String("config", "/etc/snd/config.toml", "config file")
 	showVersionOnly = flag.Bool("version", false, "show version and quit")
 	flag.Parse()
