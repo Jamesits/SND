@@ -71,7 +71,7 @@ func (config *Config) SOARecordFillDefault(r *SOARecord, useDefaultRecord bool) 
 	r.MName = ensureDotAtRight(r.MName)
 }
 
-// fix Config and fill in defaults
+// FixConfig fixes Config and fill in defaults
 func (config *Config) FixConfig() {
 	var err error
 
@@ -88,7 +88,7 @@ func (config *Config) FixConfig() {
 	}
 	config.SOARecordFillDefault(config.DefaultSOARecord, false)
 
-	fixed_hosts := make([]*perNetConfig, 0)
+	fixedHosts := make([]*perNetConfig, 0)
 	for network, domain := range config.PerHostConfigs {
 		netCIDR := ""
 		for i := 0; i < len(network); i++ {
@@ -112,10 +112,10 @@ func (config *Config) FixConfig() {
 				PtrGenerationModeString: &mode,
 				Domain:                  &d,
 			}
-			fixed_hosts = append(fixed_hosts, thisHost)
+			fixedHosts = append(fixedHosts, thisHost)
 		}
 	}
-	config.PerNetConfigs = append(fixed_hosts, config.PerNetConfigs...)
+	config.PerNetConfigs = append(fixedHosts, config.PerNetConfigs...)
 
 	// note that range is byVal so we use index here
 	for _, currentConfig := range config.PerNetConfigs {
@@ -131,32 +131,32 @@ func (config *Config) FixConfig() {
 		}
 		switch strings.ToLower(*currentConfig.PtrGenerationModeString) {
 		case "fixed":
-			currentConfig.PtrGenerationMode = FIXED
+			currentConfig.PtrGenerationMode = Fixed
 		case "prefix_ltr":
-			currentConfig.PtrGenerationMode = PREPEND_LEFT_TO_RIGHT
+			currentConfig.PtrGenerationMode = PrependLeftToRight
 		case "prefix_rtl":
-			currentConfig.PtrGenerationMode = PREPEND_RIGHT_TO_LEFT
+			currentConfig.PtrGenerationMode = PrependRightToLeft
 		case "prefix_ltr_dash":
-			currentConfig.PtrGenerationMode = PREPEND_LEFT_TO_RIGHT_DASH
+			currentConfig.PtrGenerationMode = PrependLeftToRightDash
 		case "prefix_rtl_dash":
-			currentConfig.PtrGenerationMode = PREPEND_RIGHT_TO_LEFT_DASH
+			currentConfig.PtrGenerationMode = PrependRightToLeftDash
 		case "prefix_ltr_onlyip":
-			currentConfig.PtrGenerationMode = PREPEND_LEFT_TO_RIGHT_ONLYIP
+			currentConfig.PtrGenerationMode = PrependLeftToRightOnlyip
 		case "prefix_rtl_onlyip":
-			currentConfig.PtrGenerationMode = PREPEND_RIGHT_TO_LEFT_ONLYIP
+			currentConfig.PtrGenerationMode = PrependRightToLeftOnlyip
 		default:
 			log.Fatalf("Unknown mode \"%s\"", *currentConfig.PtrGenerationModeString)
 		}
 
 		// fill IPv6Notation
 		if currentConfig.IPv6NotationString == nil {
-			currentConfig.IPv6NotationMode = ARPA_NOTATION
+			currentConfig.IPv6NotationMode = ArpaNotation
 		} else {
 			switch strings.ToLower(*currentConfig.IPv6NotationString) {
 			case "arpa":
-				currentConfig.IPv6NotationMode = ARPA_NOTATION
+				currentConfig.IPv6NotationMode = ArpaNotation
 			case "four_hexs":
-				currentConfig.IPv6NotationMode = FOUR_HEXS_NOTATION
+				currentConfig.IPv6NotationMode = FourHexsNotation
 			default:
 				log.Fatalf("Unknown ipv6_notation \"%s\"", *currentConfig.PtrGenerationModeString)
 			}

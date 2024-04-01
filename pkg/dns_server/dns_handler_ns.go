@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func handleNS(this *handler, r, msg *dns.Msg) {
+func handleNS(this *Handler, r, msg *dns.Msg) {
 	log.Printf("NS %s\n", msg.Question[0].Name)
 
 	// TODO: check if domain exists

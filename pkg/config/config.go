@@ -5,20 +5,20 @@ import "net"
 type PtrGenerationMode int
 
 const (
-	FIXED PtrGenerationMode = iota
-	PREPEND_LEFT_TO_RIGHT
-	PREPEND_RIGHT_TO_LEFT
-	PREPEND_LEFT_TO_RIGHT_DASH
-	PREPEND_RIGHT_TO_LEFT_DASH
-	PREPEND_RIGHT_TO_LEFT_ONLYIP
-	PREPEND_LEFT_TO_RIGHT_ONLYIP
+	Fixed PtrGenerationMode = iota
+	PrependLeftToRight
+	PrependRightToLeft
+	PrependLeftToRightDash
+	PrependRightToLeftDash
+	PrependRightToLeftOnlyip
+	PrependLeftToRightOnlyip
 )
 
 type IPv6NotationMode int
 
 const (
-	ARPA_NOTATION IPv6NotationMode = iota
-	FOUR_HEXS_NOTATION
+	ArpaNotation IPv6NotationMode = iota
+	FourHexsNotation
 )
 
 // Config file
