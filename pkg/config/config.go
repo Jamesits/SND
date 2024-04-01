@@ -23,6 +23,7 @@ const (
 
 // Config file
 type Config struct {
+	Debug                 bool              `toml:"debug"`
 	Listen                []*string         `toml:"listen"`
 	PerNetConfigs         []*perNetConfig   `toml:"net"`
 	PerHostConfigs        map[string]string `toml:"host"`
