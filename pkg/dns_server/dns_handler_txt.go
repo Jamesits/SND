@@ -7,23 +7,25 @@ import (
 )
 
 // replies a TXT record containing server name and version
-func handleTXTVersionRequest(this *Handler, r, msg *dns.Msg) {
-	log.Printf("TXT %s\n", msg.Question[0].Name)
+func handleTXTVersionRequest(handler *Handler, r, msg *dns.Msg) {
+	if handler.config.Debug {
+		log.Printf("TXT %s\n", msg.Question[0].Name)
+	}
 
-	if !this.config.AllowVersionReporting {
+	if !handler.config.AllowVersionReporting {
 		msg.Rcode = dns.RcodeRefused
 		return
 	}
 
 	var versionString string
-	if len(this.config.OverrideVersionString) == 0 {
+	if len(handler.config.OverrideVersionString) == 0 {
 		versionString = version.GetVersionFullString()
 	} else {
-		versionString = this.config.OverrideVersionString
+		versionString = handler.config.OverrideVersionString
 	}
 
 	msg.Answer = append(msg.Answer, &dns.TXT{
-		Hdr: dns.RR_Header{Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: r.Question[0].Qclass, Ttl: this.config.DefaultSOARecord.TTL},
+		Hdr: dns.RR_Header{Name: msg.Question[0].Name, Rrtype: r.Question[0].Qtype, Class: r.Question[0].Qclass, Ttl: handler.config.DefaultSOARecord.TTL},
 		Txt: []string{versionString},
 	})
 }

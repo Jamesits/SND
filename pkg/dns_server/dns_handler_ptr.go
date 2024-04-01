@@ -10,14 +10,16 @@ import (
 	"github.com/miekg/dns"
 )
 
-func handlePTR(this *Handler, r, msg *dns.Msg) {
+func handlePTR(handler *Handler, r, msg *dns.Msg) {
 	msg.Question[0].Name = strings.ToLower(msg.Question[0].Name)
 	nameBreakout := strings.Split(msg.Question[0].Name, ".")
 	index := len(nameBreakout) - 1
 
 	// sanity check
 	if index < 3 || nameBreakout[index] != "" || nameBreakout[index-1] != "arpa" {
-		log.Printf("PTR %s not rational\n", msg.Question[0].Name)
+		if handler.config.Debug {
+			log.Printf("PTR %s not rational\n", msg.Question[0].Name)
+		}
 		return
 	}
 
@@ -44,7 +46,9 @@ func handlePTR(this *Handler, r, msg *dns.Msg) {
 			}
 		}
 	default:
-		log.Printf("PTR %s unable to parse IP address\n", msg.Question[0].Name)
+		if handler.config.Debug {
+			log.Printf("PTR %s unable to parse IP address\n", msg.Question[0].Name)
+		}
 		return
 	}
 	ipaddr := net.ParseIP(strings.TrimRight(b.String(), split))
@@ -55,7 +59,7 @@ func handlePTR(this *Handler, r, msg *dns.Msg) {
 	// find a matching Config
 	// TODO: optimize to less then O(n)
 	found := false
-	for _, netBlock := range this.config.PerNetConfigs {
+	for _, netBlock := range handler.config.PerNetConfigs {
 		if netBlock.IPNet.Contains(ipaddr) {
 			found = true
 
@@ -100,7 +104,9 @@ func handlePTR(this *Handler, r, msg *dns.Msg) {
 				return
 			}
 
-			log.Printf("PTR %s => %s", ipaddr.String(), p.String())
+			if handler.config.Debug {
+				log.Printf("PTR %s => %s", ipaddr.String(), p.String())
+			}
 
 			// generate an answer
 			msg.Answer = append(msg.Answer, &dns.PTR{
@@ -111,7 +117,7 @@ func handlePTR(this *Handler, r, msg *dns.Msg) {
 		}
 	}
 
-	if !found {
+	if !found && handler.config.Debug {
 		log.Printf("PTR %s unknown net", ipaddr.String())
 	}
 }
