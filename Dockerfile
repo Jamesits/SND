@@ -1,5 +1,5 @@
 # build stage
-FROM golang:1.20-bullseye as builder
+FROM golang:1.22-bullseye as builder
 
 ARG GOPATH=/tmp/go
 RUN apt-get update -y \
@@ -8,7 +8,7 @@ RUN apt-get update -y \
 
 WORKDIR /root/snd
 COPY . /root/snd/
-RUN goreleaser build --config contrib/goreleaser/goreleaser.yaml --single-target --id "snd" --output "dist/snd" --snapshot --clean
+RUN  /tmp/go/bin/goreleaser build --config contrib/goreleaser/goreleaser.yaml --single-target --id "snd" --output "dist/snd" --snapshot --clean
 
 # production stage
 FROM debian:bullseye-slim
@@ -19,7 +19,6 @@ COPY --from=builder /etc/passwd /etc/group /etc/
 
 COPY --from=builder /root/snd/dist/snd /usr/local/bin/
 COPY --from=builder /root/snd/contrib/config/config.toml /etc/snd/
-
 # nope
 # See: https://github.com/moby/moby/issues/8460
 # USER nobody:nogroup
