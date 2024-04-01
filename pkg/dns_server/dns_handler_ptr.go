@@ -11,6 +11,7 @@ import (
 )
 
 func handlePTR(this *Handler, r, msg *dns.Msg) {
+	msg.Question[0].Name = strings.ToLower(msg.Question[0].Name)
 	nameBreakout := strings.Split(msg.Question[0].Name, ".")
 	index := len(nameBreakout) - 1
 
