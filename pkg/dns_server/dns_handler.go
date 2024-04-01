@@ -7,18 +7,18 @@ import (
 	"strings"
 )
 
-type handler struct {
+type Handler struct {
 	config *config.Config
 }
 
-func NewHandler(config *config.Config) *handler {
-	return &handler{config: config}
+func NewHandler(config *config.Config) *Handler {
+	return &Handler{config: config}
 }
 
-func (this *handler) newDNSReplyMsg() *dns.Msg {
+func (handler *Handler) newDNSReplyMsg() *dns.Msg {
 	msg := dns.Msg{}
 
-	msg.Compress = this.config.CompressDNSMessages
+	msg.Compress = handler.config.CompressDNSMessages
 
 	// this is an authoritative DNS server
 	msg.Authoritative = true
@@ -33,13 +33,13 @@ func (this *handler) newDNSReplyMsg() *dns.Msg {
 }
 
 // send out the generated answer, and if the answer is not correct, send out a SERVFAIL
-func (this *handler) finishAnswer(w *dns.ResponseWriter, r *dns.Msg) {
+func (handler *Handler) finishAnswer(w *dns.ResponseWriter, r *dns.Msg) {
 	err := (*w).WriteMsg(r)
 	if err != nil {
 		exception.SoftFailWithReason("failed to send primary DNS answer", err)
 
-		// if answer sanity check (miekg/dns automatically does this) fails, reply with SERVFAIL
-		msg := this.newDNSReplyMsg()
+		// if answer sanity check (miekg/dns automatically does handler) fails, reply with SERVFAIL
+		msg := handler.newDNSReplyMsg()
 		msg.SetReply(r)
 		msg.Rcode = dns.RcodeServerFailure
 		err = (*w).WriteMsg(msg)
@@ -49,12 +49,12 @@ func (this *handler) finishAnswer(w *dns.ResponseWriter, r *dns.Msg) {
 
 // TODO: force TCP for 1) clients which requests too fast; 2) non-existent answers
 // See: https://labs.apnic.net/?p=382
-func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
-	msg := this.newDNSReplyMsg()
+func (handler *Handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
+	msg := handler.newDNSReplyMsg()
 	msg.SetReply(r)
 
 	// on function return, we send out the current answer
-	defer this.finishAnswer(&w, msg)
+	defer handler.finishAnswer(&w, msg)
 
 	// sanity check
 	if len(r.Question) != 1 {
@@ -66,19 +66,19 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	case dns.ClassINET:
 		switch r.Question[0].Qtype {
 		case dns.TypeSOA:
-			handleSOA(this, r, msg)
+			handleSOA(handler, r, msg)
 			return
 
 		case dns.TypeNS:
-			handleNS(this, r, msg)
+			handleNS(handler, r, msg)
 			return
 
 		case dns.TypePTR:
-			handlePTR(this, r, msg)
+			handlePTR(handler, r, msg)
 			return
 
 		default:
-			handleDefault(this, r, msg)
+			handleDefault(handler, r, msg)
 			return
 		}
 	case dns.ClassCHAOS:
@@ -87,14 +87,14 @@ func (this *handler) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 			if strings.EqualFold(r.Question[0].Name, "version.bind.") {
 				// we need to reply our software version
 				// https://serverfault.com/questions/517087/dns-how-to-find-out-which-software-a-remote-dns-server-is-running
-				handleTXTVersionRequest(this, r, msg)
+				handleTXTVersionRequest(handler, r, msg)
 			} else {
-				handleDefault(this, r, msg)
+				handleDefault(handler, r, msg)
 			}
 			return
 
 		default:
-			handleDefault(this, r, msg)
+			handleDefault(handler, r, msg)
 			return
 		}
 	}

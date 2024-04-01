@@ -10,7 +10,7 @@ import (
 	"github.com/miekg/dns"
 )
 
-func handlePTR(this *handler, r, msg *dns.Msg) {
+func handlePTR(this *Handler, r, msg *dns.Msg) {
 	nameBreakout := strings.Split(msg.Question[0].Name, ".")
 	index := len(nameBreakout) - 1
 
@@ -65,36 +65,36 @@ func handlePTR(this *handler, r, msg *dns.Msg) {
 			}
 
 			switch netBlock.PtrGenerationMode {
-			case config.FIXED:
+			case config.Fixed:
 				p.WriteString(*netBlock.Domain)
-			case config.PREPEND_LEFT_TO_RIGHT:
+			case config.PrependLeftToRight:
 				p.WriteString(IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode))
 				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
-			case config.PREPEND_RIGHT_TO_LEFT:
+			case config.PrependRightToLeft:
 				p.WriteString(IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode))
 				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
-			case config.PREPEND_LEFT_TO_RIGHT_DASH:
+			case config.PrependLeftToRightDash:
 				IPGenerate := IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode)
 				p.WriteString(strings.Replace(IPGenerate, ".", "-", -1))
 				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
-			case config.PREPEND_RIGHT_TO_LEFT_DASH:
+			case config.PrependRightToLeftDash:
 				IPGenerate := IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode)
 				p.WriteString(strings.Replace(IPGenerate, ".", "-", -1))
 				p.WriteString(".")
 				p.WriteString(*netBlock.Domain)
-			case config.PREPEND_RIGHT_TO_LEFT_ONLYIP:
-            	IPGenerate := IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode)
-            	p.WriteString(strings.Replace(IPGenerate, ".", "", -1))
-            	p.WriteString(".")
-            	p.WriteString(*netBlock.Domain)
-            case config.PREPEND_LEFT_TO_RIGHT_ONLYIP:
-            	IPGenerate := IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode)
-            	p.WriteString(strings.Replace(IPGenerate, ".", "", -1))
-            	p.WriteString(".")
-            	p.WriteString(*netBlock.Domain)
+			case config.PrependRightToLeftOnlyip:
+				IPGenerate := IPToArpaDomain(ipaddr, true, netBlock.IPv6NotationMode)
+				p.WriteString(strings.Replace(IPGenerate, ".", "", -1))
+				p.WriteString(".")
+				p.WriteString(*netBlock.Domain)
+			case config.PrependLeftToRightOnlyip:
+				IPGenerate := IPToArpaDomain(ipaddr, false, netBlock.IPv6NotationMode)
+				p.WriteString(strings.Replace(IPGenerate, ".", "", -1))
+				p.WriteString(".")
+				p.WriteString(*netBlock.Domain)
 			default:
 				return
 			}
@@ -138,9 +138,9 @@ func IPToArpaDomain(ip net.IP, reverse bool, ipv6ConversionMode config.IPv6Notat
 	}
 
 	switch ipv6ConversionMode {
-	case config.ARPA_NOTATION:
+	case config.ArpaNotation:
 		break
-	case config.FOUR_HEXS_NOTATION:
+	case config.FourHexsNotation:
 		reverse = !reverse // in this mode, ret is processed in reverse, so we need to reverse it again before returning
 		var ret2 []string
 		for i := len(ret) - 1; i >= 0; i -= 4 {
