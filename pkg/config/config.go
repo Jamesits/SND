@@ -25,7 +25,9 @@ const (
 type Config struct {
 	Debug                 bool              `toml:"debug"`
 	Listen                []*string         `toml:"listen"`
-	PerNetConfigs         []*perNetConfig   `toml:"net"`
+	PerNetConfigs         []*PerNetConfig   `toml:"net"`
+	PerIPv4NetConfigs     []*PerNetConfig   `toml:""`
+	PerIPv6NetConfigs     []*PerNetConfig   `toml:""`
 	PerHostConfigs        map[string]string `toml:"host"`
 	DefaultNSes           []*string         `toml:"ns"`
 	OverrideVersionString string            `toml:"version_string"`
@@ -45,7 +47,7 @@ type SOARecord struct {
 	TTL     uint32  `toml:"TTL"`
 }
 
-type perNetConfig struct {
+type PerNetConfig struct {
 	IPNetString             *string           `toml:"net"`
 	IPNet                   *net.IPNet        `toml:""`
 	PtrGenerationModeString *string           `toml:"mode"`
