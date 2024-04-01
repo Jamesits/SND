@@ -119,7 +119,7 @@ Notes:
 
 ## Compilation
 
-Golang 1.20.2 or later is officially supported. Before starting, make sure the `GOROOT` and `GOPATH` environment
+Golang 1.22 or later is officially supported. Before starting, make sure the `GOROOT` and `GOPATH` environment
 variables are set correctly and there is a `go` binary is in your `PATH`.
 
 ```shell
