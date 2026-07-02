@@ -1,6 +1,6 @@
 module github.com/jamesits/snd
 
-go 1.22
+go 1.25.0
 
 require (
 	github.com/BurntSushi/toml v1.3.2
@@ -11,8 +11,8 @@ require (
 require (
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	golang.org/x/mod v0.16.0 // indirect
-	golang.org/x/net v0.22.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/tools v0.19.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
